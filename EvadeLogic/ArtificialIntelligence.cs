@@ -2,7 +2,6 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media.TextFormatting;
 using Constants;
 
 namespace Checkers

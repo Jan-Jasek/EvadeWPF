@@ -1,8 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Constants
+namespace EvadeWPF.Helpers
 {
+
+    public enum BoardValues
+    {
+        Empty = 0, WhitePawn = 1, BlackPawn = 2, WhiteKing = 3, BlackKing = 4, Frozen = 5, Barrier = 7
+
+    }
+
+    public enum TurnResults
+    {
+        Moved = 0,
+        Frozen = 1
+    }
+
     public static class AppConstants
     {
         public static int BoardSize = 6;
@@ -20,17 +33,7 @@ namespace Constants
             {"F",6}
         };
 
-        public enum BoardValues
-        {
-            Empty = 0, WhitePawn = 1, BlackPawn = 2, WhiteKing = 3, BlackKing = 4, Frozen = 5, Barrier = 7
 
-        }
-
-        public enum TurnResults
-        {
-            Moved = 0,
-            Frozen = 1
-        }
 
         public static Dictionary<string, string> OptionsValues = new Dictionary<string, string>()
         {

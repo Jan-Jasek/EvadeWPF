@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvadeWPF"
         mc:Ignorable="d"
-        Title="EvadeWPF" Height="450" Width="800"
+        Title="EvadeWPF" Height="450" Width="700"
         DataContext="{Binding GameVM, Source={StaticResource ContainerLocator}}">
     <Border Background="Bisque">
         <Grid x:Name="MainGrid" Margin="0">
@@ -24,15 +24,13 @@
             </Menu>
             <ListBox Name="BoardListBox"
                      Grid.Column="0" Grid.Row="1" 
+                     Margin="10,0,10,0"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                     ItemsPanel="{StaticResource BoardPanelTemplate}"
                      >
-
             </ListBox>
-            <Grid x:Name="BoardGrid" Grid.Column="0" Grid.Row="1" 
-                  Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
-            </Grid>
-            <TextBlock x:Name="OutputTextBlock" Margin="10,0,10,0" 
+            <TextBlock x:Name="OutputTextBlock" Margin="10,0,10,10" 
                        Grid.Column="1" Grid.Row="1"
                        Text="Output" Background="BurlyWood"/>
         </Grid>

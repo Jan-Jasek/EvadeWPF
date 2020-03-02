@@ -10,6 +10,7 @@ using System.Windows.Input;
 using EvadeWPF.Annotations;
 using EvadeWPF.Helpers;
 using EvadeWPF.Interfaces;
+using EvadeWPF.Models;
 
 namespace EvadeWPF.ViewModels
 {
@@ -31,9 +32,8 @@ namespace EvadeWPF.ViewModels
         public GameWindowViewModel(IGameEngine ge)
         {
             engine = ge;
-            engine.StartEngine();
+
         }
-        
 
         private ICommand _newGameCommand;
         public ICommand NewGameCommand
@@ -48,7 +48,12 @@ namespace EvadeWPF.ViewModels
 
         private void NewGame()
         {
-            throw new NotImplementedException();
+            _boardItems = new ObservableCollection<IBoardItem>();
+
+            for (int i = 0; i <= 35; i++)
+            {
+                _boardItems.Add(new BoardSquare());
+            }
         }
     }
 }

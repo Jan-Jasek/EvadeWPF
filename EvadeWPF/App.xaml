@@ -6,7 +6,10 @@
              StartupUri="GameWindow.xaml">
     <Application.Resources>
          <ResourceDictionary>
-            <helpers:ContainerLocator x:Key="CotainerLocator"/>
+             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="GameWindowResources.xaml"/>
+             </ResourceDictionary.MergedDictionaries>
+             <helpers:ContainerLocator x:Key="ContainerLocator"/>
          </ResourceDictionary>
     </Application.Resources>
 </Application>
