@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.1022
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvadeWPF", "EvadeWPF\EvadeWPF.csproj", "{B8998544-36A3-4A8B-BB3A-0D6B26E8B91A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvadeLogic", "EvadeLogic\EvadeLogic.csproj", "{30E5B18C-F5E2-489E-BAA4-CB5B746EB346}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B8998544-36A3-4A8B-BB3A-0D6B26E8B91A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8998544-36A3-4A8B-BB3A-0D6B26E8B91A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8998544-36A3-4A8B-BB3A-0D6B26E8B91A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30E5B18C-F5E2-489E-BAA4-CB5B746EB346}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30E5B18C-F5E2-489E-BAA4-CB5B746EB346}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30E5B18C-F5E2-489E-BAA4-CB5B746EB346}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30E5B18C-F5E2-489E-BAA4-CB5B746EB346}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
