@@ -23,7 +23,7 @@ namespace EvadeWPF.ViewModels
             BoardItems = new ObservableCollection<IBoardItem>();
             _engine = ge;
             _engine.StartEngine();
-            _engine.OutputMessage += OutputMessage();
+            _engine.OutputMessage += OutputMessage;
         }
 
         private IGameEngine _engine;
@@ -50,7 +50,7 @@ namespace EvadeWPF.ViewModels
                     var boardPiece = (BoardPiece) value;
                     if (_selectedBoardPiece == null)
                     {
-                        if (_engine.ValidateSelect() == true)
+                        if (_engine.IsMoveValid() == true)
                         {
                             _selectedBoardPiece = boardPiece;
                         }
@@ -58,12 +58,12 @@ namespace EvadeWPF.ViewModels
                     }
                     else
                     {
-                        _engine.ValidateMove();
+                        _engine.IsMoveValid();
                     }
                 }
                 else
                 {
-                    _engine.ValidateMove();
+                    _engine.IsMoveValid();
                 }
 
             }
@@ -94,7 +94,7 @@ namespace EvadeWPF.ViewModels
         private void NewGame()
         {
             OutputMessage(AppConstants.NewGameStarted);
-            _engine.NewGame();
+            //_engine.NewGame();
 
             for (int i = 3; i <= 35; i++)
             {
@@ -107,6 +107,8 @@ namespace EvadeWPF.ViewModels
             BoardItems.Add(new BoardPiece() { Col = 3, Row = 0, PieceType = BoardValues.BlackKing });
             BoardItems.Add(new BoardPiece() { Col = 4, Row = 0, PieceType = BoardValues.BlackPawn });
             BoardItems.Add(new BoardPiece() { Col = 5, Row = 0, PieceType = BoardValues.BlackPawn });
+
+
 
         }
 

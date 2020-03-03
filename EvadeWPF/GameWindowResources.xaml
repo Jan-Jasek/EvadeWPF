@@ -58,7 +58,7 @@
         <Setter Property="Padding" Value="5"/>
     </Style>
 
-
+    <!--Background of the game board-->
     <DrawingBrush x:Key="BoardBackgroundBrush" Viewport="0,0,100,100" ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
         <DrawingBrush.Drawing>
             <DrawingGroup RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
@@ -87,7 +87,6 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
-    <!--Background of the game board-->
     <ItemsPanelTemplate x:Key="BoardBackgroundTemplate">
         <Grid Width="300" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
               Background="{StaticResource BoardBackgroundBrush}">

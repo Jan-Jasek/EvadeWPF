@@ -4,14 +4,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using EvadeLogic;
 using EvadeWPF.Interfaces;
 
 namespace EvadeWPF.Services
 {
     public class GameEngine : IGameEngine
     {
-        private GameManager _gameManager;
+        //private GameManager _gameManager;
         public List<List<int>> MoveList { get; set; } = new List<List<int>>();
         public List<int> Move { get; set; }
         public bool IsGameRunning { get; set; } = false;
@@ -22,21 +21,32 @@ namespace EvadeWPF.Services
 
         public void StartEngine()
         {
-            _gameManager = new GameManager();
-            _gameManager.NewGameStart();
+            //_gameManager = new GameManager();
+            //_gameManager.NewGameStart();
             IsGameRunning = true;
 
         }
 
         public void StopEngine()
         {
-            _gameManager = null;
+            //_gameManager = null;
             IsGameRunning = false;
         }
 
-        public void ValidateMove()
+        public bool IsSelectValid()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool IsMoveValid()
         {
 
+            return true;
+        }
+
+        public void NewGame()
+        {
+            throw new NotImplementedException();
         }
 
         public void SendCommandToGame()
@@ -46,7 +56,8 @@ namespace EvadeWPF.Services
 
         public int[,] SendGameBoardToGameWindow()
         {
-            return _gameManager.GameBoard.GameArray;
+            //return _gameManager.GameBoard.GameArray;
+            return new int[1,1];
         }
 
     }
