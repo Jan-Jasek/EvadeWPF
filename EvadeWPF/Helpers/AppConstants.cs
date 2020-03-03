@@ -50,6 +50,7 @@ namespace EvadeWPF.Helpers
             {"!DifficultyB","Select AI difficulty for black player" }
         };
 
+        public static string NewGameStarted = "New game has started!\n";
         public static string WrongFieldSelected = "Invalid field selected. Please select a valid field.\n";
         public static string WrongMoveSelected = "Invalid move.\n";
         public static string FieldFrozen = "The field is now frozen. ";
@@ -73,8 +74,6 @@ namespace EvadeWPF.Helpers
         public const string DifficultyW = "!DIFFICULTYW";
         public const string DifficultyB = "!DIFFICULTYB";
         public const string Hint = "!HINT";
-        
-
 
         public static Random Rnd { get; set; } = new Random();
     }

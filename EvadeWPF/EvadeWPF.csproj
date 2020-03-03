@@ -70,7 +70,7 @@
     <Compile Include="Helpers\RelayCommands.cs" />
     <Compile Include="Interfaces\IGameEngine.cs" />
     <Compile Include="Interfaces\IBoardItem.cs" />
-    <Compile Include="Models\Unit.cs" />
+    <Compile Include="Models\BoardPiece.cs" />
     <Compile Include="Models\BoardSquare.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services\GameEngine.cs" />
@@ -133,6 +133,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Textures\TextureFrozen.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EvadeLogic\EvadeLogic.csproj">
+      <Project>{30e5b18c-f5e2-489e-baa4-cb5b746eb346}</Project>
+      <Name>EvadeLogic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

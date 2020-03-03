@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using EvadeWPF.Annotations;
 using EvadeWPF.Helpers;
@@ -20,10 +21,12 @@ namespace EvadeWPF.ViewModels
         public GameWindowViewModel(IGameEngine ge)
         {
             BoardItems = new ObservableCollection<IBoardItem>();
-            engine = ge;
+            _engine = ge;
+            _engine.StartEngine();
+            _engine.OutputMessage += OutputMessage();
         }
 
-        private IGameEngine engine;
+        private IGameEngine _engine;
 
         private ObservableCollection<IBoardItem> _boardItems;
         public ObservableCollection<IBoardItem> BoardItems
@@ -36,15 +39,35 @@ namespace EvadeWPF.ViewModels
             }
         }
 
+        private BoardPiece _selectedBoardPiece;
         private IBoardItem _selectedBoardItem;
         public IBoardItem SelectedBoardItem
         {
             set
             {
+                if(value is BoardPiece)
+                {
+                    var boardPiece = (BoardPiece) value;
+                    if (_selectedBoardPiece == null)
+                    {
+                        if (_engine.ValidateSelect() == true)
+                        {
+                            _selectedBoardPiece = boardPiece;
+                        }
+
+                    }
+                    else
+                    {
+                        _engine.ValidateMove();
+                    }
+                }
+                else
+                {
+                    _engine.ValidateMove();
+                }
 
             }
         }
-
 
         private ICommand _newGameCommand;
         public ICommand NewGameCommand
@@ -70,23 +93,26 @@ namespace EvadeWPF.ViewModels
 
         private void NewGame()
         {
-            OutputTextBox = "NewGame started";
+            OutputMessage(AppConstants.NewGameStarted);
+            _engine.NewGame();
 
             for (int i = 3; i <= 35; i++)
             {
                 BoardItems.Add(new BoardSquare());
             }
 
-            BoardItems.Add(new Unit() { Col = 0, Row = 0, PieceType = BoardValues.BlackPawn });
-            BoardItems.Add(new Unit() { Col = 1, Row = 0, PieceType = BoardValues.BlackPawn });
-            BoardItems.Add(new Unit() { Col = 2, Row = 0, PieceType = BoardValues.BlackKing });
-            BoardItems.Add(new Unit() { Col = 3, Row = 0, PieceType = BoardValues.BlackKing });
-            BoardItems.Add(new Unit() { Col = 4, Row = 0, PieceType = BoardValues.BlackPawn });
-            BoardItems.Add(new Unit() { Col = 5, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new BoardPiece() { Col = 0, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new BoardPiece() { Col = 1, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new BoardPiece() { Col = 2, Row = 0, PieceType = BoardValues.BlackKing });
+            BoardItems.Add(new BoardPiece() { Col = 3, Row = 0, PieceType = BoardValues.BlackKing });
+            BoardItems.Add(new BoardPiece() { Col = 4, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new BoardPiece() { Col = 5, Row = 0, PieceType = BoardValues.BlackPawn });
 
+        }
 
-
-
+        private void OutputMessage(string message)
+        {
+            OutputTextBox = _outputTextBox + message;
         }
     }
 }

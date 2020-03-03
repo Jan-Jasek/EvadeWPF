@@ -8,7 +8,7 @@ using EvadeWPF.Interfaces;
 
 namespace EvadeWPF.Models
 {
-    public class Unit : NotifyPropertyChanged, IBoardItem
+    public class BoardPiece : NotifyPropertyChanged, IBoardItem
     {
         public int Row { get; set; }
         public int Col { get; set; }
