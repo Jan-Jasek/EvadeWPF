@@ -10,15 +10,8 @@ using Unity;
 
 namespace EvadeWPF.Helpers
 {
-    public class ContainerLocator
+    public static class ContainerLocator
     {
-        private UnityContainer _container;
-        public ContainerLocator()
-        {
-            _container = new UnityContainer();
-            _container.RegisterType<IGameEngine, GameEngine>();
-        }
-
-        public GameWindowViewModel GameVM => _container.Resolve<GameWindowViewModel>();
+        public static UnityContainer UContainer = new UnityContainer();
     }
 }

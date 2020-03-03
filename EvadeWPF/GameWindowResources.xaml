@@ -4,11 +4,11 @@
                     xmlns:helpers="clr-namespace:EvadeWPF.Helpers"
                     >
 
-    <Style x:Key="PieceStyle" TargetType="Image">
+    <Style x:Key="BoardPieceStyle" TargetType="Image">
         <Style.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding ItemType}" Value="{x:Static Member=helpers:BoardValues.WhitePawn}"/>
+                    <Condition Binding="{Binding PieceType}" Value="{x:Static Member=helpers:BoardValues.WhitePawn}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Source" Value="Images/Pieces/WhitePawn.png"/>
@@ -16,39 +16,50 @@
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding ItemType}" Value="{x:Static Member=enums:ChessBoardItem.Piece}"/>
-                    <Condition Binding="{Binding Piece}" Value="{x:Static Member=enums:PieceType.Queen}"/>
-                    <Condition Binding="{Binding Color}" Value="{x:Static Member=enums:PieceColor.White}"/>
+                    <Condition Binding="{Binding PieceType}" Value="{x:Static Member=helpers:BoardValues.WhiteKing}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/WhiteQueen.png"/>
+                    <Setter Property="Source" Value="Images/Pieces/WhiteKing.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding ItemType}" Value="{x:Static Member=enums:ChessBoardItem.Piece}"/>
-                    <Condition Binding="{Binding Piece}" Value="{x:Static Member=enums:PieceType.Bishop}"/>
-                    <Condition Binding="{Binding Color}" Value="{x:Static Member=enums:PieceColor.White}"/>
+                    <Condition Binding="{Binding PieceType}" Value="{x:Static Member=helpers:BoardValues.BlackPawn}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/WhiteBishop.png"/>
+                    <Setter Property="Source" Value="Images/Pieces/BlackPawn.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding ItemType}" Value="{x:Static Member=enums:ChessBoardItem.Piece}"/>
-                    <Condition Binding="{Binding Piece}" Value="{x:Static Member=enums:PieceType.Knight}"/>
-                    <Condition Binding="{Binding Color}" Value="{x:Static Member=enums:PieceColor.White}"/>
+                    <Condition Binding="{Binding PieceType}" Value="{x:Static Member=helpers:BoardValues.BlackKing}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/WhiteKnight.png"/>
+                    <Setter Property="Source" Value="Images/Pieces/BlackKing.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
-
+            <DataTrigger Binding="{Binding PieceType}" Value="{x:Static Member=helpers:BoardValues.Frozen}">
+                <Setter Property="Source" Value="Images/Textures/TextureFrozen.jpg"/>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 
-    <DrawingBrush x:Key="LightWoodBoardBrush" Viewport="0,0,100,100" ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
+    <DataTemplate x:Key="BoardTemplate">
+        <Image Name="BoardPieceImg" Style="{StaticResource BoardPieceStyle}" RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <RotateTransform Angle="0"/>
+            </Image.RenderTransform>
+        </Image>
+    </DataTemplate>
+
+    <Style x:Key="BoardPieceContainerStyle" TargetType="ListBoxItem">
+        <Setter Property="Grid.Row" Value="{Binding Row, Mode=OneWay}"/>
+        <Setter Property="Grid.Column" Value="{Binding Col, Mode=OneWay}"/>
+        <Setter Property="Padding" Value="5"/>
+    </Style>
+
+
+    <DrawingBrush x:Key="BoardBackgroundBrush" Viewport="0,0,100,100" ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
         <DrawingBrush.Drawing>
             <DrawingGroup RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
                 <GeometryDrawing>
@@ -76,10 +87,10 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
-    <ItemsPanelTemplate x:Key="BoardPanelTemplate">
-        <!-- Width is 400 since each square is 50 in the DrawingBrush – eight squares in each row and column -->
+    <!--Background of the game board-->
+    <ItemsPanelTemplate x:Key="BoardBackgroundTemplate">
         <Grid Width="300" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
-              Background="{StaticResource LightWoodBoardBrush}">
+              Background="{StaticResource BoardBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -98,4 +109,5 @@
             </Grid.ColumnDefinitions>
         </Grid>
     </ItemsPanelTemplate>
+
 </ResourceDictionary>

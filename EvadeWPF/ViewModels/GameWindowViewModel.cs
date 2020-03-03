@@ -16,6 +16,13 @@ namespace EvadeWPF.ViewModels
 {
     public class GameWindowViewModel : NotifyPropertyChanged
     {
+
+        public GameWindowViewModel(IGameEngine ge)
+        {
+            BoardItems = new ObservableCollection<IBoardItem>();
+            engine = ge;
+        }
+
         private IGameEngine engine;
 
         private ObservableCollection<IBoardItem> _boardItems;
@@ -29,11 +36,15 @@ namespace EvadeWPF.ViewModels
             }
         }
 
-        public GameWindowViewModel(IGameEngine ge)
+        private IBoardItem _selectedBoardItem;
+        public IBoardItem SelectedBoardItem
         {
-            engine = ge;
+            set
+            {
 
+            }
         }
+
 
         private ICommand _newGameCommand;
         public ICommand NewGameCommand
@@ -46,14 +57,36 @@ namespace EvadeWPF.ViewModels
             }
         }
 
+        private string _outputTextBox;
+        public string OutputTextBox
+        {
+            get => _outputTextBox;
+            set
+            {
+                _outputTextBox = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private void NewGame()
         {
-            _boardItems = new ObservableCollection<IBoardItem>();
+            OutputTextBox = "NewGame started";
 
-            for (int i = 0; i <= 35; i++)
+            for (int i = 3; i <= 35; i++)
             {
-                _boardItems.Add(new BoardSquare());
+                BoardItems.Add(new BoardSquare());
             }
+
+            BoardItems.Add(new Unit() { Col = 0, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new Unit() { Col = 1, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new Unit() { Col = 2, Row = 0, PieceType = BoardValues.BlackKing });
+            BoardItems.Add(new Unit() { Col = 3, Row = 0, PieceType = BoardValues.BlackKing });
+            BoardItems.Add(new Unit() { Col = 4, Row = 0, PieceType = BoardValues.BlackPawn });
+            BoardItems.Add(new Unit() { Col = 5, Row = 0, PieceType = BoardValues.BlackPawn });
+
+
+
+
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EvadeWPF.Helpers;
 
 namespace EvadeWPF.Interfaces
 {
@@ -10,5 +11,7 @@ namespace EvadeWPF.Interfaces
     {
         int Row { get; set; }
         int Col { get; set; }
+
+        BoardValues PieceType { get; set; }
     }
 }

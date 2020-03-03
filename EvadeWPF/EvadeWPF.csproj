@@ -123,21 +123,16 @@
     <Folder Include="Converters\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Pieces\BlackBishop.png" />
     <Resource Include="Images\Pieces\BlackKing.png" />
-    <Resource Include="Images\Pieces\BlackKnight.png" />
     <Resource Include="Images\Pieces\BlackPawn.png" />
-    <Resource Include="Images\Pieces\BlackQueen.png" />
-    <Resource Include="Images\Pieces\BlackRook.png" />
-    <Resource Include="Images\Pieces\WhiteBishop.png" />
     <Resource Include="Images\Pieces\WhiteKing.png" />
-    <Resource Include="Images\Pieces\WhiteKnight.png" />
     <Resource Include="Images\Pieces\WhitePawn.png" />
-    <Resource Include="Images\Pieces\WhiteQueen.png" />
-    <Resource Include="Images\Pieces\WhiteRook.png" />
     <Resource Include="Images\Textures\DarkWood.jpg" />
     <Resource Include="Images\Textures\Texture_1.jpg" />
     <Resource Include="Images\Textures\Texture_2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Textures\TextureFrozen.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

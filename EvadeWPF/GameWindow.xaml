@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvadeWPF"
         mc:Ignorable="d"
-        Title="EvadeWPF" Height="450" Width="700"
-        DataContext="{Binding GameVM, Source={StaticResource ContainerLocator}}">
+        Title="EvadeWPF" Height="450" Width="700">
     <Border Background="Bisque">
         <Grid x:Name="MainGrid" Margin="0">
             <Grid.RowDefinitions>
@@ -27,12 +26,17 @@
                      Margin="10,0,10,0"
                      HorizontalAlignment="Center" VerticalAlignment="Center"
                      HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                     ItemsPanel="{StaticResource BoardPanelTemplate}"
+                     ItemsSource="{Binding BoardItems}"
+                     ItemTemplate="{StaticResource BoardTemplate}"
+                     ItemContainerStyle="{StaticResource BoardPieceContainerStyle}"
+                     SelectedItem="{Binding SelectedBoardItem, Mode=OneWayToSource}"
+                     ItemsPanel="{StaticResource BoardBackgroundTemplate}"
+                     RenderTransformOrigin="0.5,0.5"
                      >
             </ListBox>
             <TextBlock x:Name="OutputTextBlock" Margin="10,0,10,10" 
                        Grid.Column="1" Grid.Row="1"
-                       Text="Output" Background="BurlyWood"/>
+                       Text="{Binding OutputTextBox}" Background="BurlyWood"/>
         </Grid>
     </Border>
 </Window>
