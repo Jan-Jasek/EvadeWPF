@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AppShared;
 using EvadeWPF.Annotations;
 using EvadeWPF.Helpers;
 using EvadeWPF.Interfaces;
@@ -39,33 +40,36 @@ namespace EvadeWPF.ViewModels
             }
         }
 
-        private BoardPiece _selectedBoardPiece;
+        private IBoardItem _selectedBoardPiece;
+        private IBoardItem _targetBoardItem;
         private IBoardItem _selectedBoardItem;
         public IBoardItem SelectedBoardItem
         {
             set
             {
-                if(value is BoardPiece)
-                {
-                    var boardPiece = (BoardPiece) value;
-                    if (_selectedBoardPiece == null)
-                    {
-                        if (_engine.IsMoveValid() == true)
-                        {
-                            _selectedBoardPiece = boardPiece;
-                        }
+                _selectedBoardItem = value;
 
+                if (_selectedBoardItem != null)
+                {
+                    if (_engine.IsSelectValid(value))
+                    {
+                        _selectedBoardPiece = value;
                     }
                     else
                     {
-                        _engine.IsMoveValid();
+                        if (_selectedBoardPiece != null && _engine.IsMoveValid(value) )
+                        {
+                            _targetBoardItem = value;
+                            SendMoveToEngine(value);
+                        }
+                        else
+                        {
+                            _selectedBoardItem = value;
+                        }
+
                     }
                 }
-                else
-                {
-                    _engine.IsMoveValid();
-                }
-
+                
             }
         }
 
@@ -91,30 +95,39 @@ namespace EvadeWPF.ViewModels
             }
         }
 
+        private void SendMoveToEngine(IBoardItem boardItem)
+        {
+            _engine.Move(boardItem);
+            ResetAfterMove();
+        }
+
         private void NewGame()
         {
             OutputMessage(AppConstants.NewGameStarted);
-            //_engine.NewGame();
 
-            for (int i = 3; i <= 35; i++)
+            for (int i = 0; i <= 5; i++)
             {
-                BoardItems.Add(new BoardSquare());
+                for (int j = 0; j <= 5; j++)
+                {
+                    BoardItems.Add(new BoardSquare() { Col = i, Row = j, PieceType = BoardValues.Empty });
+                }
             }
 
-            BoardItems.Add(new BoardPiece() { Col = 0, Row = 0, PieceType = BoardValues.BlackPawn });
-            BoardItems.Add(new BoardPiece() { Col = 1, Row = 0, PieceType = BoardValues.BlackPawn });
-            BoardItems.Add(new BoardPiece() { Col = 2, Row = 0, PieceType = BoardValues.BlackKing });
-            BoardItems.Add(new BoardPiece() { Col = 3, Row = 0, PieceType = BoardValues.BlackKing });
-            BoardItems.Add(new BoardPiece() { Col = 4, Row = 0, PieceType = BoardValues.BlackPawn });
-            BoardItems.Add(new BoardPiece() { Col = 5, Row = 0, PieceType = BoardValues.BlackPawn });
-
-
-
+            _engine.NewGame();
+            _engine.AddUnitsFromGameBoard(BoardItems);
         }
+
 
         private void OutputMessage(string message)
         {
-            OutputTextBox = _outputTextBox + message;
+            OutputTextBox = _outputTextBox + "\n" + message;
+        }
+
+        public void ResetAfterMove()
+        {
+            _selectedBoardItem = null;
+            _selectedBoardPiece = null;
+            _targetBoardItem = null;
         }
     }
 }

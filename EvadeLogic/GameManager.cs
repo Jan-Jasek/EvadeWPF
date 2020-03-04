@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AppShared;
 
 namespace EvadeLogic
 {
@@ -8,8 +9,7 @@ namespace EvadeLogic
     {
         #region Private fields
 
-        private GameBoard gameBoard;
-        private CheckersConsole.CheckersConsole checkersConsole;
+        public GameBoard GameBoard { get; private set; }
         //FormatLog = Column-row-unit-column-row-unit-turnResult
         private string tempLog;
         private string outputLog;
@@ -19,12 +19,10 @@ namespace EvadeLogic
 
         #region Public properties
         public List<List<int>> MoveList { get; set; } = new List<List<int>>();
-
         public bool IsGameRunning { get; set; } = false;
         public bool IsPlayerWTurn { get; set; } = true;
-
-        public bool IsPlayerWAI { get; set; } = true;
-        public bool IsPlayerBAI { get; set; } = true;
+        public bool IsPlayerWAI { get; set; } = false;
+        public bool IsPlayerBAI { get; set; } = false;
 
         #endregion
 
@@ -32,8 +30,7 @@ namespace EvadeLogic
 
         public GameManager()
         {
-            gameBoard = new GameBoard();
-            checkersConsole = new CheckersConsole.CheckersConsole {consoleArray = gameBoard.GameArray, size = AppConstants.BoardSize};
+            GameBoard = new GameBoard();
         }
 
         #endregion
@@ -44,17 +41,26 @@ namespace EvadeLogic
         /// </summary>
         public void NewGame()
         {
-            gameBoard.NewGame();
-            checkersConsole.NewGame();
+            GameBoard.NewGame();
             IsGameRunning = true;
-            gameBoard.TurnCounter = 0;
-
-            GameLoop();
+            GameBoard.TurnCounter = 0;
         }
 
         #endregion
 
+        #region Validations
 
+        public bool IsSelectValid(List<int> move)
+        {
+            return Rules.SelectedUnit_Check(move, GameBoard.TurnCounter);
+        }
+
+        public bool IsMoveValid(List<int> move)
+        {
+            return Rules.ValidateMove(move);
+        }
+
+        #endregion
         /// <summary>
         /// Main game loop, awaits user input and count turns.
         /// </summary>
@@ -67,41 +73,39 @@ namespace EvadeLogic
                 outputLog = "";
                 tempLog = "";
 
-                IsPlayerWTurn = (gameBoard.TurnCounter % 2 != 1);
-                checkersConsole.PrintBoard();
+                IsPlayerWTurn = (GameBoard.TurnCounter % 2 != 1);
+                //checkersConsole.PrintBoard();
 
-                if (IsGameEndTriggered(gameBoard.GameArray))
+                if (IsGameEndTriggered(GameBoard.GameArray))
                     break;
 
                 GameTurn();
 
-                gameBoard.TurnCounter++;
+                GameBoard.TurnCounter++;
             }
 
             //Starts new game if no game is running
-            checkersConsole.NoGameRunning();
+            //checkersConsole.NoGameRunning();
             NewGame();
         }
 
         private void GameTurn()
         {
 
-            if (IsPlayerOnTurnAI())
+            if (IsPlayerOnTurnAI)
             {
                 AIGameTurn();
             }
 
-            if (!IsPlayerOnTurnAI())
+            if (!IsPlayerOnTurnAI)
             {
                 PlayerGameTurn();
             }
 
         }
 
-        private bool IsPlayerOnTurnAI()
-        {
-            return (IsPlayerWTurn && IsPlayerWAI) || (!IsPlayerWTurn && IsPlayerBAI);
-        }
+        public bool IsPlayerOnTurnAI => (IsPlayerWTurn && IsPlayerWAI) || (!IsPlayerWTurn && IsPlayerBAI);
+
 
         /// <summary>
         /// AI game turn
@@ -113,7 +117,7 @@ namespace EvadeLogic
             {
                 PrintTeamsTurn();
 
-                inputMessage = checkersConsole.PromptUser(AppConstants.AITurn);
+                inputMessage = "";//checkersConsole.PromptUser(AITurn);
                 if (!InputOptions(inputMessage))
                     continue;
 
@@ -128,7 +132,7 @@ namespace EvadeLogic
             var aILevel = IsPlayerWTurn ? ArtificialIntelligence.AILevelW : ArtificialIntelligence.AILevelB;
             ArtificialIntelligence.MoveList = new List<List<int>>(MoveList);
 
-            Move = ArtificialIntelligence.FindBestMove(aILevel,gameBoard.GameArray,IsPlayerWTurn);
+            Move = ArtificialIntelligence.FindBestMove(aILevel,GameBoard.GameArray,IsPlayerWTurn);
             tempLog = string.Join("", Move);
             //Console.WriteLine(tempLog);
             outputLog = HelperMethods.ParseOutputLog(tempLog);
@@ -143,7 +147,7 @@ namespace EvadeLogic
         /// </summary>
         private bool IsGameEndTriggered(int[,] gameArray)
         {
-            if (Rules.IsGameEndTie(gameBoard.GameArray))
+            if (Rules.IsGameEndTie(GameBoard.GameArray))
             {
                 GameEndTie();
                 return true;
@@ -162,8 +166,8 @@ namespace EvadeLogic
 
         private void GameEndTie()
         {
-            checkersConsole.PrintBoard();
-            checkersConsole.PrintMessage(AppConstants.GameEndTie);
+            //checkersConsole.PrintBoard();
+            //checkersConsole.PrintMessage(GameEndTie);
             IsGameRunning = false;
         }
 
@@ -171,21 +175,21 @@ namespace EvadeLogic
         {
             string message = "";
             bool end = false;
-            if (Rules.GameEndPlayerWWin(gameBoard.GameArray, MoveList))
+            if (Rules.GameEndPlayerWWin(GameBoard.GameArray, MoveList))
             {
                 message = AppConstants.White;
                 end = true;
             }
 
-            if (Rules.GameEndPlayerBWin(gameBoard.GameArray, MoveList))
+            if (Rules.GameEndPlayerBWin(GameBoard.GameArray, MoveList))
             {
                 message = AppConstants.Black;
                 end = true;
             }
             if(end)
             {
-                checkersConsole.PrintBoard();
-                checkersConsole.GameWon(message);
+                //checkersConsole.PrintBoard();
+                //checkersConsole.GameWon(message);
                 IsGameRunning = false;
                 return true;
             }
@@ -195,8 +199,8 @@ namespace EvadeLogic
 
         private void GameEndNoPossibleTurns()
         {
-            checkersConsole.PrintBoard();
-            checkersConsole.PrintMessage(AppConstants.NoPossibleTurns);
+            //checkersConsole.PrintBoard();
+            //checkersConsole.PrintMessage(NoPossibleTurns);
             IsGameRunning = false;
         }
 
@@ -215,8 +219,8 @@ namespace EvadeLogic
             //If Empty
             if (message == "")
             {
-                checkersConsole.PrintMessage(AppConstants.InvalidInput);
-                checkersConsole.PrintMessage(AppConstants.WriteHelp);
+                //checkersConsole.PrintMessage(InvalidInput);
+                //checkersConsole.PrintMessage(WriteHelp);
                 return false;
             }
             //OptionsMenu
@@ -231,8 +235,8 @@ namespace EvadeLogic
                     return true;
             }
 
-            checkersConsole.PrintMessage(AppConstants.InvalidInput);
-            checkersConsole.PrintMessage(AppConstants.WriteHelp);   
+            //checkersConsole.PrintMessage(InvalidInput);
+            //checkersConsole.PrintMessage(WriteHelp);   
             return false;
         }
 
@@ -242,8 +246,8 @@ namespace EvadeLogic
             switch (message)
             {
                 default:
-                    checkersConsole.PrintMessage(AppConstants.InvalidInput);
-                    checkersConsole.PrintMessage(AppConstants.WriteHelp);
+                    //checkersConsole.PrintMessage(InvalidInput);
+                    //checkersConsole.PrintMessage(WriteHelp);
                     return false;
                 case AppConstants.Help:
                     PrintHelp();
@@ -252,26 +256,26 @@ namespace EvadeLogic
                     return true;
                 case AppConstants.PlayerB:
                     IsPlayerBAI = !IsPlayerBAI;
-                    checkersConsole.PrintMessage($"Black player switched. Is it AI? {IsPlayerBAI}.");
+                    //checkersConsole.PrintMessage($"Black player switched. Is it AI? {IsPlayerBAI}.");
                     GameLoop();
                     return false;
                 case AppConstants.PlayerW:
                     IsPlayerWAI = !IsPlayerWAI;
-                    checkersConsole.PrintMessage($"White player switched. Is it AI? {IsPlayerWAI}.");
+                    //checkersConsole.PrintMessage($"White player switched. Is it AI? {IsPlayerWAI}.");
                     GameLoop();
                     return false;
                 case AppConstants.PrintBoard:
-                    checkersConsole.PrintBoard();
+                    //checkersConsole.PrintBoard();
                     return false;
                 case AppConstants.DifficultyW:
                     temp = SwitchDifficulty();
                     if (temp != -1)
-                        ArtificialIntelligence.AILevelW = (AppConstants.AILevels) temp;
+                        ArtificialIntelligence.AILevelW = (AILevels) temp;
                     return false;
                 case AppConstants.DifficultyB:
                     temp = SwitchDifficulty();
                     if (temp != -1)
-                        ArtificialIntelligence.AILevelB = (AppConstants.AILevels) temp;
+                        ArtificialIntelligence.AILevelB = (AILevels) temp;
                     return false; 
                 case AppConstants.Hint:
                     HintBestMove();
@@ -284,23 +288,23 @@ namespace EvadeLogic
 
         private void HintBestMove()
         {
-            checkersConsole.PrintMessage(string.Join("",ArtificialIntelligence.FindBestMove(AppConstants.AILevels.Smart,gameBoard.GameArray,IsPlayerWTurn)));
+            //checkersConsole.PrintMessage(string.Join("",ArtificialIntelligence.FindBestMove(AILevels.Smart,GameBoard.GameArray,IsPlayerWTurn)));
         }
 
         private int SwitchDifficulty()
         {
-            string diff = checkersConsole.PromptUser(AppConstants.SelectDifficulty);
+            string diff = "";//checkersConsole.PromptUser(SelectDifficulty);
             switch (diff)
             {
                 default:
-                    checkersConsole.PrintMessage(AppConstants.InvalidInput);
+                    //checkersConsole.PrintMessage(InvalidInput);
                     return -1;
                 case "0":
-                    return (int)AppConstants.AILevels.Random;
+                    return (int)AILevels.Random;
                 case "1":
-                    return (int)AppConstants.AILevels.Dumb;
+                    return (int)AILevels.Dumb;
                 case "2":
-                    return (int)AppConstants.AILevels.Smart;
+                    return (int)AILevels.Smart;
             }
             
         }
@@ -315,7 +319,7 @@ namespace EvadeLogic
         private void PlayerGameTurn()
         {
             SelectUnit();
-            checkersConsole.PrintBoard();
+            //checkersConsole.PrintBoard();
             PlayerMove();
         }
         /// <summary>
@@ -332,7 +336,7 @@ namespace EvadeLogic
             {
                 PrintTeamsTurn();
 
-                inputMessage = checkersConsole.PromptUser(AppConstants.SelectUnit);
+                inputMessage = "";//checkersConsole.PromptUser(SelectUnit);
                 if (!ValidateInput(inputMessage))
                     continue;
 
@@ -340,25 +344,25 @@ namespace EvadeLogic
                     return;
 
                 selectedPosition = HelperMethods.ParseInputLog(inputMessage);
-                selectedValue = gameBoard.GameArray[HelperMethods.ToInt(selectedPosition[0]), HelperMethods.ToInt(selectedPosition[1])];
+                selectedValue = GameBoard.GameArray[HelperMethods.ToInt(selectedPosition[0]), HelperMethods.ToInt(selectedPosition[1])];
 
                 var move = new List<int>()
                     {HelperMethods.ToInt(selectedPosition[0]), HelperMethods.ToInt(selectedPosition[1]), selectedValue};
 
-                if (Rules.SelectedUnit_Check(move, gameBoard.TurnCounter))
+                if (Rules.SelectedUnit_Check(move, GameBoard.TurnCounter))
                 {
                     Move.AddRange(move);
                     break;
 
                 }
-                checkersConsole.PrintMessage(AppConstants.WrongFieldSelected);
+                //checkersConsole.PrintMessage(WrongFieldSelected);
             }
 
 
             outputLog = inputMessage + selectedValue;
 
-            GameBoard.SetField(gameBoard.GameArray,HelperMethods.ToInt(selectedPosition[0]), HelperMethods.ToInt(selectedPosition[1]), 9);
-            checkersConsole.SelectedUnit(outputLog);
+            GameBoard.SetField(GameBoard.GameArray,HelperMethods.ToInt(selectedPosition[0]), HelperMethods.ToInt(selectedPosition[1]), 9);
+            //checkersConsole.SelectedUnit(outputLog);
         }
 
         /// <summary>
@@ -368,11 +372,11 @@ namespace EvadeLogic
         {
             if (IsPlayerWTurn)
             {
-                checkersConsole.PrintMessage(AppConstants.WhiteTeamTurn);
+                //checkersConsole.PrintMessage(WhiteTeamTurn);
             }
             else
             {
-                checkersConsole.PrintMessage(AppConstants.BlackTeamTurn);
+                //checkersConsole.PrintMessage(BlackTeamTurn);
             }
         }
 
@@ -387,7 +391,7 @@ namespace EvadeLogic
             {
                 PrintTeamsTurn();
 
-                var inputMessage = checkersConsole.PromptUser(AppConstants.SelectPosition);
+                var inputMessage = "";//checkersConsole.PromptUser(SelectPosition);
                 if (!ValidateInput(inputMessage))
                     continue;
 
@@ -395,7 +399,7 @@ namespace EvadeLogic
                     return;
 
                 var newPosition = HelperMethods.ParseInputLog(inputMessage);
-                var oldValue = gameBoard.GameArray[HelperMethods.ToInt(newPosition[0]), HelperMethods.ToInt(newPosition[1])];
+                var oldValue = GameBoard.GameArray[HelperMethods.ToInt(newPosition[0]), HelperMethods.ToInt(newPosition[1])];
 
                 var move = new List<int>(Move.Select(i => (i)));
                 move.AddRange( new List<int>() { HelperMethods.ToInt(newPosition[0]), HelperMethods.ToInt(newPosition[1]), oldValue});
@@ -407,7 +411,7 @@ namespace EvadeLogic
                     break;
                 }
 
-                checkersConsole.PrintMessage(AppConstants.WrongMoveSelected);
+                //checkersConsole.PrintMessage(WrongMoveSelected);
             }
 
         }
@@ -424,33 +428,33 @@ namespace EvadeLogic
         private void DoMove()
         {
             outputLog += Move[6].ToString();
-            GameBoard.SetField(gameBoard.GameArray,Move[0], Move[1]);
+            GameBoard.SetField(GameBoard.GameArray,Move[0], Move[1]);
 
-            if (IsPlayerOnTurnAI())
+            if (IsPlayerOnTurnAI)
             {
-                if (Move[6] == (int)AppConstants.TurnResults.Moved)
+                if (Move[6] == (int)TurnResults.Moved)
                 {
-                    GameBoard.SetField(gameBoard.GameArray,Move[3], Move[4], Move[2]);
-                    checkersConsole.LogTurn(outputLog, AppConstants.PressEnter);
+                    GameBoard.SetField(GameBoard.GameArray,Move[3], Move[4], Move[2]);
+                    //checkersConsole.LogTurn(outputLog, PressEnter);
                 }
                 else
                 {
-                    GameBoard.SetField(gameBoard.GameArray,Move[3], Move[4], (int)AppConstants.BoardValues.Frozen);
-                    checkersConsole.LogTurn(outputLog, AppConstants.FieldFrozen + AppConstants.PressEnter);
+                    GameBoard.SetField(GameBoard.GameArray,Move[3], Move[4], (int)BoardValues.Frozen);
+                    //checkersConsole.LogTurn(outputLog, FieldFrozen + PressEnter);
                 }
 
             }
             else
             {
-                if (Move[6] == (int)AppConstants.TurnResults.Moved)
+                if (Move[6] == (int)TurnResults.Moved)
                 {
-                    GameBoard.SetField(gameBoard.GameArray, Move[3], Move[4], Move[2]);
-                    checkersConsole.LogTurn(outputLog);
+                    GameBoard.SetField(GameBoard.GameArray, Move[3], Move[4], Move[2]);
+                    //checkersConsole.LogTurn(outputLog);
                 }
                 else
                 {
-                    GameBoard.SetField(gameBoard.GameArray, Move[3], Move[4], (int)AppConstants.BoardValues.Frozen);
-                    checkersConsole.LogTurn(outputLog, AppConstants.FieldFrozen);
+                    GameBoard.SetField(GameBoard.GameArray, Move[3], Move[4], (int)BoardValues.Frozen);
+                    //checkersConsole.LogTurn(outputLog, FieldFrozen);
                 }
             }
         }
@@ -465,7 +469,7 @@ namespace EvadeLogic
         {
             foreach (var n in AppConstants.OptionsValues)
             {
-                checkersConsole.PrintMessage($"{n.Key} : {n.Value}");
+                //checkersConsole.PrintMessage($"{n.Key} : {n.Value}");
             }
         }
 

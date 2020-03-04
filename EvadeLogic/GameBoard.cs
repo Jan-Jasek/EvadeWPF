@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AppShared;
 
 namespace EvadeLogic
 {
@@ -41,9 +42,9 @@ namespace EvadeLogic
                 for (int col = 0; col <= size + 1; col++)
                 {
                     GameArray[col, row] = (row < 1 || row > size || col < 1 || col > size)
-                        ? (int)AppConstants.BoardValues.Barrier
-                        : (int)AppConstants.BoardValues.Empty;
-                    if (GameArray[col, row] == (int)AppConstants.BoardValues.Empty)
+                        ? (int)BoardValues.Barrier
+                        : (int)BoardValues.Empty;
+                    if (GameArray[col, row] == (int)BoardValues.Empty)
                         GameArray[col, row] = (int)NewGameAddUnit(col, row);
                     //GameArray[1, 6] = (int)BoardValues.WhiteKing;
                     //GameArray[3, 3] = (int)BoardValues.WhitePawn;
@@ -58,34 +59,34 @@ namespace EvadeLogic
             }
         }
 
-        private AppConstants.BoardValues NewGameAddUnit(int col, int row)
+        private BoardValues NewGameAddUnit(int col, int row)
         {
             if (row == 1)
             {
                 if ((col == size / 2) || (col == size / 2 + 1))
                 {
-                    return AppConstants.BoardValues.BlackKing;
+                    return BoardValues.BlackKing;
                 }
 
-                return AppConstants.BoardValues.BlackPawn;
+                return BoardValues.BlackPawn;
             }
             if (row == size)
             {
                 if ((col == size / 2) || (col == size / 2 + 1))
                 {
-                    return AppConstants.BoardValues.WhiteKing;
+                    return BoardValues.WhiteKing;
                 }
 
-                return AppConstants.BoardValues.WhitePawn;
+                return BoardValues.WhitePawn;
             }
 
-            return AppConstants.BoardValues.Empty;
+            return BoardValues.Empty;
         }
 
         #endregion
         
 
-        public static void SetField(int[,] gameArray, int col, int row, int result = (int)AppConstants.BoardValues.Empty)
+        public static void SetField(int[,] gameArray, int col, int row, int result = (int)BoardValues.Empty)
         {
             gameArray[col, row] = result;
         }

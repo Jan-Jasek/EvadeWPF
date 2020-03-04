@@ -1,8 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EvadeLogic
+namespace AppShared
 {
+
+    public enum BoardValues
+    {
+        Empty = 0, WhitePawn = 1, BlackPawn = 2, WhiteKing = 3, BlackKing = 4, Frozen = 5, Barrier = 7
+
+    }
+
+    public enum TurnResults
+    {
+        Moved = 0,
+        Frozen = 1
+    }
+
+    public enum AILevels
+    {
+        Random = 0,
+        Dumb = 2,
+        Smart = 4
+    }
+
     public static class AppConstants
     {
         public static int BoardSize = 6;
@@ -32,6 +52,7 @@ namespace EvadeLogic
             {"!EndGame","Ends current game." }
         };
 
+        public static string NewGameStarted = "New game has started!";
         public static string WrongFieldSelected = "Invalid field selected. Please select a valid field.\n";
         public static string WrongMoveSelected = "Invalid move.\n";
         public static string FieldFrozen = "The field is now frozen. ";
@@ -57,25 +78,6 @@ namespace EvadeLogic
         public const string DifficultyB = "!DIFFICULTYB";
         public const string Hint = "!HINT";
         public const string EndGame = "!ENDGAME";
-
-        public enum BoardValues
-        {
-            Empty = 0, WhitePawn = 1, BlackPawn = 2, WhiteKing = 3, BlackKing = 4, Frozen = 5, Barrier = 7
-
-        }
-
-        public enum TurnResults
-        {
-            Moved = 0,
-            Frozen = 1
-        }
-
-        public enum AILevels
-        {
-            Random = 0,
-            Dumb = 2,
-            Smart = 4
-        }
 
         public static Random Rnd { get; set; } = new Random();
     }

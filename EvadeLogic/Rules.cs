@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AppShared;
 
 namespace EvadeLogic
 {
@@ -16,16 +17,16 @@ namespace EvadeLogic
         /// <returns></returns>
         internal static bool SelectedUnit_Check(List<int> move, int turnCounter)
         {
-            if (HelperMethods.EqualsAny(move[2], (int)AppConstants.BoardValues.Empty, (int)AppConstants.BoardValues.Barrier, (int)AppConstants.BoardValues.Frozen))
+            if (HelperMethods.EqualsAny(move[2], (int)BoardValues.Empty, (int)BoardValues.Barrier, (int)BoardValues.Frozen))
                 return false;
             if (turnCounter % 2 == 1)
             {
-                if (HelperMethods.EqualsAny(move[2], (int)AppConstants.BoardValues.WhiteKing, (int)AppConstants.BoardValues.WhitePawn))
+                if (HelperMethods.EqualsAny(move[2], (int)BoardValues.WhiteKing, (int)BoardValues.WhitePawn))
                     return false;
             }
             else
             {
-                if (HelperMethods.EqualsAny(move[2], (int)AppConstants.BoardValues.BlackKing, (int)AppConstants.BoardValues.BlackPawn))
+                if (HelperMethods.EqualsAny(move[2], (int)BoardValues.BlackKing, (int)BoardValues.BlackPawn))
                     return false;
             }
             return true;
@@ -60,16 +61,16 @@ namespace EvadeLogic
                 {
                     if (teamWhiteTurn)
                     {
-                        if (HelperMethods.EqualsAny(gameArray[col, row], (int)AppConstants.BoardValues.WhiteKing,
-                            (int)AppConstants.BoardValues.WhitePawn))
+                        if (HelperMethods.EqualsAny(gameArray[col, row], (int)BoardValues.WhiteKing,
+                            (int)BoardValues.WhitePawn))
                         {
                             GetAllPositionMoves(col, row, gameArray, moveList);
                         }
                     }
                     else
                     {
-                        if (HelperMethods.EqualsAny(gameArray[col, row], (int)AppConstants.BoardValues.BlackKing,
-                            (int)AppConstants.BoardValues.BlackPawn))
+                        if (HelperMethods.EqualsAny(gameArray[col, row], (int)BoardValues.BlackKing,
+                            (int)BoardValues.BlackPawn))
                         {
                             GetAllPositionMoves(col, row, gameArray, moveList);
                         }
@@ -112,33 +113,33 @@ namespace EvadeLogic
         internal static bool CheckField(List<int> move)
         {
             //Check whether new field is valid for movement
-            if (!HelperMethods.EqualsAny(move[5], (int)AppConstants.BoardValues.Barrier, (int)AppConstants.BoardValues.Frozen))
+            if (!HelperMethods.EqualsAny(move[5], (int)BoardValues.Barrier, (int)BoardValues.Frozen))
             {
                 //if empty, move is valid
-                if (move[5] == (int)AppConstants.BoardValues.Empty)
+                if (move[5] == (int)BoardValues.Empty)
                 {
-                    move.Add((int)AppConstants.TurnResults.Moved);
+                    move.Add((int)TurnResults.Moved);
                     return true;
                 }
 
                 //Determines turn result depending on what is the selected unit ańd content of new field
                 switch (move[2])
                 {
-                    case (int)AppConstants.BoardValues.BlackPawn:
+                    case (int)BoardValues.BlackPawn:
                         {
-                            if (HelperMethods.EqualsAny(move[5],(int)AppConstants.BoardValues.WhitePawn, (int)AppConstants.BoardValues.WhiteKing))
+                            if (HelperMethods.EqualsAny(move[5],(int)BoardValues.WhitePawn, (int)BoardValues.WhiteKing))
                             {
-                                move.Add((int)AppConstants.TurnResults.Frozen);
+                                move.Add((int)TurnResults.Frozen);
                                 return true;
 
                             }
                             return false;
                         }
-                    case (int)AppConstants.BoardValues.WhitePawn:
+                    case (int)BoardValues.WhitePawn:
                         {
-                            if (HelperMethods.EqualsAny(move[5], (int)AppConstants.BoardValues.BlackPawn, (int)AppConstants.BoardValues.BlackKing))
+                            if (HelperMethods.EqualsAny(move[5], (int)BoardValues.BlackPawn, (int)BoardValues.BlackKing))
                             {
-                                move.Add((int)AppConstants.TurnResults.Frozen);
+                                move.Add((int)TurnResults.Frozen);
                                 return true;
                             }
 
@@ -184,9 +185,9 @@ namespace EvadeLogic
             {
                 for (int col = 1; col <= AppConstants.BoardSize; col++)
                 {
-                    if (gameArray[col, row] == (int)AppConstants.BoardValues.WhiteKing)
+                    if (gameArray[col, row] == (int)BoardValues.WhiteKing)
                         WhiteKings++;
-                    if (gameArray[col, row] == (int)AppConstants.BoardValues.BlackKing)
+                    if (gameArray[col, row] == (int)BoardValues.BlackKing)
                         BlackKings++;
                 }
             }
@@ -222,12 +223,12 @@ namespace EvadeLogic
             for (int col = 1; col <= AppConstants.BoardSize; col++)
             {
                 
-                if (PlayerW && gameArray[col, 1] == (int)AppConstants.BoardValues.WhiteKing)
+                if (PlayerW && gameArray[col, 1] == (int)BoardValues.WhiteKing)
                 {
                     return true;
                 }
 
-                if (!PlayerW && gameArray[col, AppConstants.BoardSize] == (int)AppConstants.BoardValues.BlackKing)
+                if (!PlayerW && gameArray[col, AppConstants.BoardSize] == (int)BoardValues.BlackKing)
                 {
                     return true;
                 }

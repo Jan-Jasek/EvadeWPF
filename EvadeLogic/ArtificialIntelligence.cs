@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using AppShared;
 
 namespace EvadeLogic
 {
@@ -14,11 +15,11 @@ namespace EvadeLogic
         public static int CountedPawnsDistance { get; set; } = 0;
         public static int OutputRating { get; set; }
         public static List<int> OutputMove { get; set; }
-        public static AppConstants.AILevels AILevelW { get; set; } = AppConstants.AILevels.Smart;
-        public static AppConstants.AILevels AILevelB { get; set; } = AppConstants.AILevels.Dumb;
+        public static AILevels AILevelW { get; set; } = AILevels.Smart;
+        public static AILevels AILevelB { get; set; } = AILevels.Dumb;
         public static bool IsPlayerWTurn { get; set; }
 
-        public static List<int> FindBestMove(AppConstants.AILevels aILevel, int[,] gameArray, bool isPlayerWTurn)
+        public static List<int> FindBestMove(AILevels aILevel, int[,] gameArray, bool isPlayerWTurn)
         {
 
             if (aILevel == 0)
@@ -58,13 +59,13 @@ namespace EvadeLogic
 
         public static int Hunting(int unit, int result)
         {
-            if ((unit == (int) AppConstants.BoardValues.BlackKing || unit == (int) AppConstants.BoardValues.WhiteKing) 
-                && result == (int)AppConstants.BoardValues.Frozen)
+            if ((unit == (int) BoardValues.BlackKing || unit == (int) BoardValues.WhiteKing) 
+                && result == (int)BoardValues.Frozen)
                 return 1;
             return 0;
         }
 
-        public static int AlphaBeta(int[,] gameArray, int depth, bool maximizingPlayer, int alpha, int beta,
+        public static int AlphaBeta(int[,] gameArray, int Depth, bool MaximizingPlayer, int alpha, int beta,
                                     string movex = "")
         {
             int rating = -AppConstants.Max;
@@ -74,8 +75,8 @@ namespace EvadeLogic
                 return 0;
 
             //Is playerW turn
-            if ((IsPlayerWTurn && maximizingPlayer) || (!IsPlayerWTurn && !maximizingPlayer))
-            //if(maximizingPlayer)
+            if ((IsPlayerWTurn && MaximizingPlayer) || (!IsPlayerWTurn && !MaximizingPlayer))
+            //if(AppConstants.MaximizingPlayer)
             {
                 //If won
                 if (Rules.GameEndPlayerWWin(gameArray, new List<List<int>>()))
@@ -95,12 +96,12 @@ namespace EvadeLogic
                     return -AppConstants.Max;
             }
 
-            //If reached the depth level
-            if (depth == 0)
+            //If reached the AppConstants.Depth level
+            if (AppConstants.Depth == 0)
             {
                 //Return turn evaluation
-                if ((IsPlayerWTurn && maximizingPlayer) || (!IsPlayerWTurn && !maximizingPlayer))
-                //if (maximizingPlayer)
+                if ((IsPlayerWTurn && MaximizingPlayer) || (!IsPlayerWTurn && !MaximizingPlayer))
+                //if (AppConstants.MaximizingPlayer)
                 {
                     rating = HeuristicEvaluation(gameArray, movex);
                 }
@@ -118,11 +119,11 @@ namespace EvadeLogic
                 //int[,] gameArray2 = HelperMethods.CloneArray(gameArray);
                 DoTempMove(move, gameArray);
 
-                rating = -AlphaBeta(gameArray, depth - 1, !maximizingPlayer, Dal(-beta), Dal(-alpha));
+                rating = -AlphaBeta(gameArray, AppConstants.Depth - 1, !MaximizingPlayer, Dal(-beta), Dal(-alpha));
 
                 //Increases evaluation of frozing moves with respect to the count of moves needed
-                //rating += HelperMethods.ToInt(move[6]) * depth;
-                rating += (Hunting((move[5]), (move[6])) * depth);
+                //rating += HelperMethods.ToInt(move[6]) * AppConstants.Depth;
+                rating += (Hunting((move[5]), (move[6])) * AppConstants.Depth);
 
                 UndoTempMove(move, gameArray);
                 //Count++;
@@ -136,7 +137,7 @@ namespace EvadeLogic
                         return beta;
                     }
                 }
-                //Console.WriteLine($"Depth: {depth} Move: {move} Rating: {rating}");
+                //Console.WriteLine($"AppConstants.Depth: {AppConstants.Depth} Move: {move} Rating: {rating}");
             }
 
 
@@ -165,13 +166,13 @@ namespace EvadeLogic
         {
             GameBoard.SetField(gameArray, (move[0]), (move[1]));
 
-            if ((move[6]) == (int)AppConstants.TurnResults.Moved)
+            if ((move[6]) == (int)TurnResults.Moved)
             {
                 GameBoard.SetField(gameArray, (move[3]), (move[4]), (move[2]));
             }
             else
             {
-                GameBoard.SetField(gameArray, (move[3]), (move[4]), (int)AppConstants.BoardValues.Frozen);
+                GameBoard.SetField(gameArray, (move[3]), (move[4]), (int)BoardValues.Frozen);
             }
         }
         public static void UndoTempMove(List<int> move, int[,] gameArray)
@@ -183,7 +184,7 @@ namespace EvadeLogic
         }
 
         /// <summary>
-        /// Evaluates the current state of the gameBoard
+        /// Evaluates the current state of the GameBoard
         /// </summary>
         /// <param name="gameArray"></param>
         /// <param name="move"></param>
@@ -209,13 +210,13 @@ namespace EvadeLogic
             {
                 for (int col = 1; col <= AppConstants.BoardSize; col++)
                 {
-                    if (gameArray[col, row] == (int) AppConstants.BoardValues.WhiteKing)
+                    if (gameArray[col, row] == (int) BoardValues.WhiteKing)
                     {
                         rating += (AppConstants.BoardSize - row + 1);
 
                     }
 
-                    if (gameArray[col, row] == (int)AppConstants.BoardValues.BlackKing)
+                    if (gameArray[col, row] == (int)BoardValues.BlackKing)
                     {
                         rating -= (row);
 
@@ -237,12 +238,12 @@ namespace EvadeLogic
             {
                 for (int col = 1; col <= AppConstants.BoardSize; col++)
                 {
-                    if (gameArray[col, row] == (int) AppConstants.BoardValues.WhitePawn)
+                    if (gameArray[col, row] == (int) BoardValues.WhitePawn)
                     {
                         rating += CountMovesToKings(gameArray, col, row, true);
                     }
 
-                    if (gameArray[col, row] == (int)AppConstants.BoardValues.BlackPawn)
+                    if (gameArray[col, row] == (int)BoardValues.BlackPawn)
                     {
                         rating -= CountMovesToKings(gameArray, col, row, false);
                     }
@@ -270,14 +271,14 @@ namespace EvadeLogic
 
                     if (IsWhiteP)
                     {
-                        if (gameArray[col, row] == (int)AppConstants.BoardValues.BlackKing)
+                        if (gameArray[col, row] == (int)BoardValues.BlackKing)
                         {
                             rating += AppConstants.BoardSize - 1 - CountMovesToField(col, row, colP, rowP);
                         }
                     }
                     else
                     {
-                        if (gameArray[col, row] == (int)AppConstants.BoardValues.WhiteKing)
+                        if (gameArray[col, row] == (int)BoardValues.WhiteKing)
                         {
                             rating += AppConstants.BoardSize - 1 - CountMovesToField(col, row, colP, rowP);
                             //rating += AppConstants.BoardSize - Math.Sqrt(Math.Pow(col - colP, 2) + Math.Pow(row - rowP, 2));
@@ -336,13 +337,13 @@ namespace EvadeLogic
             {
                 for (int col = 1; col <= AppConstants.BoardSize; col++)
                 {
-                    if (gameArray[col, row] == (int) AppConstants.BoardValues.WhiteKing)
+                    if (gameArray[col, row] == (int) BoardValues.WhiteKing)
                         score += 100;
-                    if (gameArray[col, row] == (int) AppConstants.BoardValues.BlackKing)
+                    if (gameArray[col, row] == (int) BoardValues.BlackKing)
                         score -= 100;
-                    if (gameArray[col, row] == (int) AppConstants.BoardValues.WhitePawn)
+                    if (gameArray[col, row] == (int) BoardValues.WhitePawn)
                         score += 0;
-                    if (gameArray[col, row] == (int) AppConstants.BoardValues.BlackPawn)
+                    if (gameArray[col, row] == (int) BoardValues.BlackPawn)
                         score -= 0;
                 }
             }

@@ -64,7 +64,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\AppConstants.cs" />
     <Compile Include="Helpers\ContainerLocator.cs" />
     <Compile Include="Helpers\NotifyPropertyChanged.cs" />
     <Compile Include="Helpers\RelayCommands.cs" />
@@ -133,6 +132,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\Textures\TextureFrozen.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AppShared\AppShared.csproj">
+      <Project>{275f06d1-f1df-4e68-96be-e11720e4bd1d}</Project>
+      <Name>AppShared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EvadeLogic\EvadeLogic.csproj">
+      <Project>{30E5B18C-F5E2-489E-BAA4-CB5B746EB346}</Project>
+      <Name>EvadeLogic</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

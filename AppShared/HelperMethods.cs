@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EvadeLogic
+namespace AppShared
 {
     public static class HelperMethods
     {
