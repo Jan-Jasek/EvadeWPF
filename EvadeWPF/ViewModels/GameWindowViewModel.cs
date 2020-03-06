@@ -25,6 +25,38 @@ namespace EvadeWPF.ViewModels
             _engine = ge;
             _engine.StartEngine();
             _engine.OutputMessage += OutputMessage;
+            _engine.RaiseEndGameTriggered += EndGame;
+            _engine.EngineThinkingChanged += EngineThinkingChanged;
+            NewGame();
+        }
+
+        private void EngineThinkingChanged(bool obj)
+        {
+            IsEngineThinking = obj;
+        }
+
+        private bool _isEngineThinking;
+        public bool IsEngineThinking
+        {
+            get
+            {
+                return _isEngineThinking;
+            }
+            set
+            {
+                _isEngineThinking = value;
+                RaisePropertyChanged();
+                if (value == false)
+                {
+                    IsListBoxEnabled = true;
+                    _engine.AddUnitsFromGameBoard(BoardItems);
+                }
+
+                if (value == true)
+                {
+                    IsListBoxEnabled = false;
+                }
+            }
         }
 
         private IGameEngine _engine;
@@ -51,7 +83,7 @@ namespace EvadeWPF.ViewModels
 
                 if (_selectedBoardItem != null)
                 {
-                    if (_engine.IsSelectValid(value))
+                    if (_selectedBoardItem is BoardPiece && _engine.IsSelectValid(value))
                     {
                         _selectedBoardPiece = value;
                     }
@@ -60,8 +92,9 @@ namespace EvadeWPF.ViewModels
                         if (_selectedBoardPiece != null && _engine.IsMoveValid(value) )
                         {
                             _targetBoardItem = value;
-                            SendMoveToEngine(value);
+                            SendMoveToEngine();
                         }
+                        //todo obsolete
                         else
                         {
                             _selectedBoardItem = value;
@@ -76,11 +109,17 @@ namespace EvadeWPF.ViewModels
         private ICommand _newGameCommand;
         public ICommand NewGameCommand
         {
-            get
+            get { return _newGameCommand ?? (_newGameCommand = new RelayCommand(p => NewGame())); }
+        }
+
+        private bool _isListBoxEnabled = true;
+        public bool IsListBoxEnabled
+        {
+            get => _isListBoxEnabled;
+            set
             {
-                if(_newGameCommand == null)
-                    _newGameCommand = new RelayCommand(p => NewGame());
-                return _newGameCommand;
+                _isListBoxEnabled = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -95,19 +134,21 @@ namespace EvadeWPF.ViewModels
             }
         }
 
-        private void SendMoveToEngine(IBoardItem boardItem)
+        private void SendMoveToEngine()
         {
-            _engine.Move(boardItem);
+            _engine.Move();
             ResetAfterMove();
+            _engine.IsEngineThinking = false;
+            _engine.AddUnitsFromGameBoard(BoardItems);
         }
 
         private void NewGame()
         {
             OutputMessage(AppConstants.NewGameStarted);
-
-            for (int i = 0; i <= 5; i++)
+            IsListBoxEnabled = true;
+            for (int i = 1; i <= 6; i++)
             {
-                for (int j = 0; j <= 5; j++)
+                for (int j = 1; j <= 6; j++)
                 {
                     BoardItems.Add(new BoardSquare() { Col = i, Row = j, PieceType = BoardValues.Empty });
                 }
@@ -117,17 +158,23 @@ namespace EvadeWPF.ViewModels
             _engine.AddUnitsFromGameBoard(BoardItems);
         }
 
+        private void EndGame(string message)
+        {
+            _engine.StopEngine();
+            IsListBoxEnabled = false;
+            OutputTextBox = "Game won by" + message;
+        }
 
         private void OutputMessage(string message)
         {
-            OutputTextBox = _outputTextBox + "\n" + message;
+            OutputTextBox = OutputTextBox + message + "\n";
         }
 
         public void ResetAfterMove()
         {
-            _selectedBoardItem = null;
             _selectedBoardPiece = null;
             _targetBoardItem = null;
+            _selectedBoardItem = null;
         }
     }
 }

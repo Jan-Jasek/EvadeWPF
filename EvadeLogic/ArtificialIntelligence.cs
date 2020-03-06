@@ -16,7 +16,7 @@ namespace EvadeLogic
         public static int OutputRating { get; set; }
         public static List<int> OutputMove { get; set; }
         public static AILevels AILevelW { get; set; } = AILevels.Smart;
-        public static AILevels AILevelB { get; set; } = AILevels.Dumb;
+        public static AILevels AILevelB { get; set; } = AILevels.Smart;
         public static bool IsPlayerWTurn { get; set; }
 
         public static List<int> FindBestMove(AILevels aILevel, int[,] gameArray, bool isPlayerWTurn)
@@ -65,7 +65,7 @@ namespace EvadeLogic
             return 0;
         }
 
-        public static int AlphaBeta(int[,] gameArray, int Depth, bool MaximizingPlayer, int alpha, int beta,
+        public static int AlphaBeta(int[,] gameArray, int depth, bool maximizingPlayer, int alpha, int beta,
                                     string movex = "")
         {
             int rating = -AppConstants.Max;
@@ -75,8 +75,8 @@ namespace EvadeLogic
                 return 0;
 
             //Is playerW turn
-            if ((IsPlayerWTurn && MaximizingPlayer) || (!IsPlayerWTurn && !MaximizingPlayer))
-            //if(AppConstants.MaximizingPlayer)
+            if ((IsPlayerWTurn && maximizingPlayer) || (!IsPlayerWTurn && !maximizingPlayer))
+            //if maximizingPlayer)
             {
                 //If won
                 if (Rules.GameEndPlayerWWin(gameArray, new List<List<int>>()))
@@ -96,12 +96,12 @@ namespace EvadeLogic
                     return -AppConstants.Max;
             }
 
-            //If reached the AppConstants.Depth level
-            if (AppConstants.Depth == 0)
+            //If reached the depth level
+            if (depth == 0)
             {
                 //Return turn evaluation
-                if ((IsPlayerWTurn && MaximizingPlayer) || (!IsPlayerWTurn && !MaximizingPlayer))
-                //if (AppConstants.MaximizingPlayer)
+                if ((IsPlayerWTurn && maximizingPlayer) || (!IsPlayerWTurn && !maximizingPlayer))
+                //if maximizingPlayer
                 {
                     rating = HeuristicEvaluation(gameArray, movex);
                 }
@@ -119,11 +119,11 @@ namespace EvadeLogic
                 //int[,] gameArray2 = HelperMethods.CloneArray(gameArray);
                 DoTempMove(move, gameArray);
 
-                rating = -AlphaBeta(gameArray, AppConstants.Depth - 1, !MaximizingPlayer, Dal(-beta), Dal(-alpha));
+                rating = -AlphaBeta(gameArray, depth - 1, !maximizingPlayer, Dal(-beta), Dal(-alpha));
 
                 //Increases evaluation of frozing moves with respect to the count of moves needed
-                //rating += HelperMethods.ToInt(move[6]) * AppConstants.Depth;
-                rating += (Hunting((move[5]), (move[6])) * AppConstants.Depth);
+                //rating += HelperMethods.ToInt(move[6]) * depth;
+                rating += (Hunting((move[5]), (move[6])) * depth);
 
                 UndoTempMove(move, gameArray);
                 //Count++;
@@ -137,7 +137,7 @@ namespace EvadeLogic
                         return beta;
                     }
                 }
-                //Console.WriteLine($"AppConstants.Depth: {AppConstants.Depth} Move: {move} Rating: {rating}");
+                //Console.WriteLine($"Depth: depth Move: {move} Rating: {rating}");
             }
 
 

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvadeWPF"
+        xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         mc:Ignorable="d"
         Title="EvadeWPF" Height="450" Width="700">
     <Border Background="Bisque">
@@ -18,9 +19,10 @@
             </Grid.ColumnDefinitions>
             <Menu VerticalAlignment="Top" Height="30" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <MenuItem Header="NewGame" Command="{Binding NewGameCommand}">
-
                 </MenuItem>
+                <MenuItem Header="AI"></MenuItem>
             </Menu>
+
             <ListBox Name="BoardListBox"
                      Grid.Column="0" Grid.Row="1" 
                      Margin="10,0,10,0"
@@ -32,7 +34,8 @@
                      SelectedItem="{Binding SelectedBoardItem, Mode=OneWayToSource}"
                      ItemsPanel="{StaticResource BoardBackgroundTemplate}"
                      RenderTransformOrigin="0.5,0.5"
-                     >
+                     IsEnabled="{Binding IsListBoxEnabled, Mode=OneWay}"
+            >
             </ListBox>
             <TextBlock x:Name="OutputTextBlock" Margin="10,0,10,10" 
                        Grid.Column="1" Grid.Row="1"

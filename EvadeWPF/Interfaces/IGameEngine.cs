@@ -10,15 +10,16 @@ namespace EvadeWPF.Interfaces
 {
     public interface IGameEngine
     {
-
         void StartEngine();
         void StopEngine();
         event Action<string> OutputMessage;
+        event Action<string> RaiseEndGameTriggered;
+        event Action<bool> EngineThinkingChanged;
         bool IsSelectValid(IBoardItem boardItem);
         bool IsMoveValid(IBoardItem boardItem);
-        void Move(IBoardItem boardItem);
+        void Move();
         void NewGame();
         void AddUnitsFromGameBoard(ObservableCollection<IBoardItem> boardItems);
-
+        bool IsEngineThinking { get; set; }
     }
 }
