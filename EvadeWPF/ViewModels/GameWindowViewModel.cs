@@ -23,7 +23,6 @@ namespace EvadeWPF.ViewModels
         {
             BoardItems = new ObservableCollection<IBoardItem>();
             _engine = ge;
-            _engine.StartEngine();
             _engine.OutputMessage += OutputMessage;
             _engine.RaiseEndGameTriggered += EndGame;
             _engine.EngineThinkingChanged += EngineThinkingChanged;
@@ -48,14 +47,30 @@ namespace EvadeWPF.ViewModels
                 RaisePropertyChanged();
                 if (value == false)
                 {
-                    IsListBoxEnabled = true;
+                    IsPanelLoading = false;
                     _engine.AddUnitsFromGameBoard(BoardItems);
+                    IsListBoxEnabled = true;
+                    PlayerOnTurn = _engine.gameManager.IsPlayerWTurn ? "White" : "Black";
+                    TurnCounterLabel = _engine.gameManager.GameBoard.TempTurnCounter.ToString() + "/" + _engine.gameManager.GameBoard.TurnCounter.ToString();
                 }
 
                 if (value == true)
                 {
+
+                    IsPanelLoading = true;
                     IsListBoxEnabled = false;
                 }
+            }
+        }
+
+        private bool _isPanelLoading;
+        public bool IsPanelLoading
+        {
+            get => _isPanelLoading;
+            set
+            {
+                _isPanelLoading = value;
+                RaisePropertyChanged();
             }
         }
 
@@ -81,7 +96,7 @@ namespace EvadeWPF.ViewModels
             {
                 _selectedBoardItem = value;
 
-                if (_selectedBoardItem != null)
+                if (_selectedBoardItem != null && IsListBoxEnabled)
                 {
                     if (_selectedBoardItem is BoardPiece && _engine.IsSelectValid(value))
                     {
@@ -94,22 +109,54 @@ namespace EvadeWPF.ViewModels
                             _targetBoardItem = value;
                             SendMoveToEngine();
                         }
-                        //todo obsolete
-                        else
-                        {
-                            _selectedBoardItem = value;
-                        }
-
                     }
                 }
                 
             }
         }
 
-        private ICommand _newGameCommand;
+        public ICommand UndoMoveCommand
+        {
+            get { return new DelegateCommand(() =>
+            {
+                OutputMessage("UndoMove");
+                _engine.UndoMove();
+            });}
+        }
+        public ICommand RedoMoveCommand
+        {
+            get { return new DelegateCommand(() => _engine.RedoMove()); }
+        }
+        public ICommand PlayBestMoveCommand
+        {
+            get { return new DelegateCommand(() => _engine.PlayBestMove());}
+        }
+        
         public ICommand NewGameCommand
         {
-            get { return _newGameCommand ?? (_newGameCommand = new RelayCommand(p => NewGame())); }
+            get { return new DelegateCommand(() => NewGame()); }
+        }
+
+        private bool _isUndoButtonEnabled = true;
+        public bool IsUndoButtonEnabled
+        {
+            get => _isUndoButtonEnabled;
+            set
+            {
+                _isListBoxEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _isRedoButtonEnabled = true;
+        public bool IsRedoButtonEnabled
+        {
+            get => _isRedoButtonEnabled;
+            set
+            {
+                _isListBoxEnabled = value;
+                RaisePropertyChanged();
+            }
         }
 
         private bool _isListBoxEnabled = true;
@@ -119,6 +166,28 @@ namespace EvadeWPF.ViewModels
             set
             {
                 _isListBoxEnabled = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _playerOnTurn;
+        public string PlayerOnTurn
+        {
+            get => _playerOnTurn;
+            set
+            {
+                _playerOnTurn = value + " player on turn" + (_engine.gameManager.IsPlayerOnTurnAI ? "(AI)" : "");
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _turnCounterLabel = "0/0";
+        public string TurnCounterLabel
+        {
+            get => _turnCounterLabel;
+            set
+            {
+                _turnCounterLabel = value;
                 RaisePropertyChanged();
             }
         }
@@ -136,15 +205,17 @@ namespace EvadeWPF.ViewModels
 
         private void SendMoveToEngine()
         {
-            _engine.Move();
+            IsListBoxEnabled = false;
+            SelectedBoardItem = null;
+            _engine.GameTurn();
             ResetAfterMove();
-            _engine.IsEngineThinking = false;
-            _engine.AddUnitsFromGameBoard(BoardItems);
         }
 
         private void NewGame()
         {
             OutputMessage(AppConstants.NewGameStarted);
+            BoardItems.Clear();
+            _engine.StartEngine();
             IsListBoxEnabled = true;
             for (int i = 1; i <= 6; i++)
             {
@@ -156,6 +227,7 @@ namespace EvadeWPF.ViewModels
 
             _engine.NewGame();
             _engine.AddUnitsFromGameBoard(BoardItems);
+            PlayerOnTurn = _engine.gameManager.IsPlayerWTurn ? "White" : "Black";
         }
 
         private void EndGame(string message)

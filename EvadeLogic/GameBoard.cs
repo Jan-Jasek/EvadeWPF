@@ -20,6 +20,7 @@ namespace EvadeLogic
         public int[,] GameArray = new int[AppConstants.BoardSize + 2, AppConstants.BoardSize + 2];
 
         public int TurnCounter { get; set; }
+        public int TempTurnCounter { get; set; }
 
         #endregion
 

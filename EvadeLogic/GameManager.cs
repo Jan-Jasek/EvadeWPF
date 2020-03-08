@@ -13,11 +13,9 @@ namespace EvadeLogic
 
         public GameBoard GameBoard { get; private set; }
         //FormatLog = Column-row-unit-column-row-unit-turnResult
-        private string tempLog;
-        private string outputLog;
 
         public List<int> Move = new List<int>();
-        public Thread MyThread;
+        public List<List<int>> MoveHistory { get; set; } = new List<List<int>>();
         #endregion
         #region Public properties
         public List<List<int>> MoveList { get; set; } = new List<List<int>>();
@@ -25,7 +23,7 @@ namespace EvadeLogic
         public bool IsPlayerWTurn { get; set; } = true;
         public bool IsPlayerWAI { get; set; } = false;
         public bool IsPlayerBAI { get; set; } = true;
-
+        public bool IsNextMoveRedo { get; set; } = false;
         public event Action<string> RaiseEndGameTriggered;
         public bool IsPlayerOnTurnAI => (IsPlayerWTurn && IsPlayerWAI) || (!IsPlayerWTurn && IsPlayerBAI);
 
@@ -49,6 +47,7 @@ namespace EvadeLogic
             GameBoard.NewGame();
             IsGameRunning = true;
             GameBoard.TurnCounter = 0;
+            GameBoard.TempTurnCounter = 0;
         }
 
         #endregion
@@ -70,20 +69,43 @@ namespace EvadeLogic
         public void DoGameTurn()
         {
             DoMove();
+            //If new move is replacing previous move without redo
+            if (GameBoard.TurnCounter != GameBoard.TempTurnCounter && !IsNextMoveRedo)
+            {
+                MoveHistory.RemoveAll(item =>
+                {
+                    int index = MoveHistory.IndexOf(item);
+                    return index > GameBoard.TempTurnCounter-1;
+                });
+                GameBoard.TurnCounter = GameBoard.TempTurnCounter;
+            }
+            //If redo move replayed
+            if (IsNextMoveRedo)
+            {
+                GameBoard.TempTurnCounter += 1;
+                IsPlayerWTurn = (GameBoard.TempTurnCounter % 2 != 1);
+            }
+            //If standard move
+            else
+            {
+                GameBoard.TurnCounter += 1;
+                GameBoard.TempTurnCounter = GameBoard.TurnCounter;
+                IsPlayerWTurn = (GameBoard.TurnCounter % 2 != 1);
+                MoveHistory.Add(new List<int>(Move));
+            }
             Move.Clear();
-            GameBoard.TurnCounter += 1;
-            IsPlayerWTurn = (GameBoard.TurnCounter % 2 != 1);
+            IsNextMoveRedo = false;
             IsGameEndTriggered(GameBoard.GameArray);
         }
-
 
         public List<int> GetAITurn()
         {
             var aILevel = IsPlayerWTurn ? ArtificialIntelligence.AILevelW : ArtificialIntelligence.AILevelB;
             ArtificialIntelligence.MoveList = new List<List<int>>(MoveList);
             int[,] testArray = CloneArray(GameBoard.GameArray);
-
-            return ArtificialIntelligence.FindBestMove(aILevel, testArray, IsPlayerWTurn);
+            Move = ArtificialIntelligence.FindBestMove(aILevel, testArray, IsPlayerWTurn);
+            return Move;
+        
         }
 
         public int[,] CloneArray(int[,] gameArray)
@@ -164,7 +186,6 @@ namespace EvadeLogic
 
         public void DoMove()
         {
-            outputLog += Move[6].ToString();
             GameBoard.SetField(GameBoard.GameArray, Move[0], Move[1]);
 
             if (IsPlayerOnTurnAI)
@@ -196,5 +217,28 @@ namespace EvadeLogic
             }
         }
 
+        public void DoUndoMove()
+        {
+            GameBoard.SetField(GameBoard.GameArray, (Move[0]),
+                (Move[1]), (Move[2]));
+            GameBoard.SetField(GameBoard.GameArray, (Move[3]),
+                (Move[4]), (Move[5]));
+
+            GameBoard.TempTurnCounter -= 1;
+            IsPlayerWTurn = (GameBoard.TempTurnCounter % 2 != 1);
+            IsGameEndTriggered(GameBoard.GameArray);
+        }
+
+        public void UndoLastMove()
+        {
+            Move = new List<int>(MoveHistory[GameBoard.TempTurnCounter - 1]);
+            DoUndoMove();
+        }
+
+        public void GetMoveForRedo()
+        {
+            Move = new List<int>(MoveHistory[GameBoard.TempTurnCounter]);
+            IsNextMoveRedo = true;
+        }
     }
 }

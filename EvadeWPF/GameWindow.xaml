@@ -5,41 +5,103 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvadeWPF"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:helpers="clr-namespace:EvadeWPF.Helpers"
+        xmlns:ctr="clr-namespace:EvadeWPF.Controls"
         mc:Ignorable="d"
-        Title="EvadeWPF" Height="450" Width="700">
+        Title="EvadeWPF" Height="700" Width="1000">
     <Border Background="Bisque">
         <Grid x:Name="MainGrid" Margin="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.1*"/>
-                <RowDefinition Height="0.9*"/>
+                <RowDefinition Height="0.8*"/>
+                <RowDefinition Height="0.1*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="0.2*"/>
             </Grid.ColumnDefinitions>
             <Menu VerticalAlignment="Top" Height="30" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                <MenuItem Header="NewGame" Command="{Binding NewGameCommand}">
+                <MenuItem Header="Game">
+                    <MenuItem Header="NewGame" Command="{Binding NewGameCommand}"/>
+                    <MenuItem Header="SaveGame" Command="{Binding SaveGameCommand}"/>
+                    <MenuItem Header="LoadGame" Command="{Binding LoadGameCommand}"/>
                 </MenuItem>
-                <MenuItem Header="AI"></MenuItem>
+                <MenuItem Header="AI">
+                    <MenuItem Header="WhitePlayer" IsCheckable="True"
+                              Command="{Binding IsWhitePlayerAI}"/>
+                    <MenuItem Header="BlackPlayer" IsCheckable="True"
+                              Command="{Binding IsBlackPlayerAI}"/>
+                </MenuItem>
+                <MenuItem Header="Difficulty">
+                    <MenuItem Header="WhitePlayer">
+                        <MenuItem Header="Random"/>
+                        <MenuItem Header="Dumb"/>
+                        <MenuItem Header="Smart"/>
+                    </MenuItem>
+                    <MenuItem Header="BlackPlayer">
+                        <MenuItem Header="Random"/>
+                        <MenuItem Header="Dumb"/>
+                        <MenuItem Header="Smart"/>
+                    </MenuItem>
+                </MenuItem>
             </Menu>
+            <Grid Margin="0,0,0,0"
+                  Grid.Column="0" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.15*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <ctr:LoadingPanel Grid.Row="0" x:Name="loadingPanel"
+                                  HorizontalAlignment="Center" VerticalAlignment="Top"
+                                  HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
+                                  IsLoading="{Binding IsPanelLoading}"/>
 
-            <ListBox Name="BoardListBox"
-                     Grid.Column="0" Grid.Row="1" 
-                     Margin="10,0,10,0"
-                     HorizontalAlignment="Center" VerticalAlignment="Center"
-                     HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-                     ItemsSource="{Binding BoardItems}"
-                     ItemTemplate="{StaticResource BoardTemplate}"
-                     ItemContainerStyle="{StaticResource BoardPieceContainerStyle}"
-                     SelectedItem="{Binding SelectedBoardItem, Mode=OneWayToSource}"
-                     ItemsPanel="{StaticResource BoardBackgroundTemplate}"
-                     RenderTransformOrigin="0.5,0.5"
-                     IsEnabled="{Binding IsListBoxEnabled, Mode=OneWay}"
-            >
-            </ListBox>
-            <TextBlock x:Name="OutputTextBlock" Margin="10,0,10,10" 
-                       Grid.Column="1" Grid.Row="1"
-                       Text="{Binding OutputTextBox}" Background="BurlyWood"/>
+                <ListBox Name="BoardListBox"
+                         Grid.Row="1" 
+                         Margin="10,0,10,0"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                         ItemsSource="{Binding BoardItems}"
+                         ItemTemplate="{StaticResource BoardTemplate}"
+                         ItemContainerStyle="{StaticResource BoardPieceContainerStyle}"
+                         SelectedItem="{Binding SelectedBoardItem, Mode=OneWayToSource}"
+                         ItemsPanel="{StaticResource BoardBackgroundTemplate}"
+                         RenderTransformOrigin="0.5,0.5"
+                         IsEnabled="{Binding IsListBoxEnabled, Mode=OneWay}">
+                </ListBox>
+            </Grid>
+            <StackPanel Orientation="Vertical"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Grid.Row="2" Grid.Column="0">
+                <Label Margin="0,0,0,0" Content="{Binding TurnCounterLabel}"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button FontFamily="Marlett" FontSize="20" Content="3"
+                            Command="{Binding UndoMoveCommand}"
+                            IsEnabled="{Binding IsUndoEnabled}"/>
+                    <Button Content="Best move"
+                            Margin="10,0,0,0"
+                            Command="{Binding PlayBestMoveCommand}"
+                            IsEnabled="{Binding IsEngineThinking, Converter={StaticResource InverseBooleanConverter}}"/>
+                    <Button FontFamily="Marlett" FontSize="20" Content="4"
+                            Margin="10,0,0,0"
+                            Command="{Binding RedoMoveCommand}"
+                            IsEnabled="{Binding IsRedoEnabled}"/>
+                </StackPanel>
+                <Label Margin ="0,0,0,0" Content="{Binding PlayerOnTurn}"
+                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+            </StackPanel>
+
+            <ScrollViewer Grid.Column="1" Grid.Row="1" >
+                <TextBlock x:Name="OutputTextBlock" Margin="10,0,10,10" 
+                           Text="{Binding OutputTextBox}" Background="BurlyWood"/>
+
+            </ScrollViewer>
         </Grid>
     </Border>
 </Window>

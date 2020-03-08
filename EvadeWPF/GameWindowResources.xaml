@@ -57,15 +57,16 @@
         </Image>
     </DataTemplate>
 
-    <helpers:Converter x:Key="Converter"/>
+    <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    <helpers:RowConverter x:Key="RowConverter"/>
     <Style x:Key="BoardPieceContainerStyle" TargetType="ListBoxItem">
-        <Setter Property="Grid.Row" Value="{Binding Row, Converter={StaticResource Converter}, Mode=OneWay}"/>
-        <Setter Property="Grid.Column" Value="{Binding Col, Converter={StaticResource Converter}, Mode=OneWay}"/>
+        <Setter Property="Grid.Row" Value="{Binding Row, Converter={StaticResource RowConverter}, Mode=OneWay}"/>
+        <Setter Property="Grid.Column" Value="{Binding Col, Converter={StaticResource RowConverter}, Mode=OneWay}"/>
         <Setter Property="Padding" Value="5"/>
     </Style>
 
     <!--Background of the game board-->
-    <DrawingBrush x:Key="BoardBackgroundBrush" Viewport="0,0,100,100" ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
+    <DrawingBrush x:Key="BoardBackgroundBrush" Viewport="0,0,150,150" ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
         <DrawingBrush.Drawing>
             <DrawingGroup RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
                 <GeometryDrawing>
@@ -74,7 +75,7 @@
                     </GeometryDrawing.Brush>
                     <GeometryDrawing.Geometry>
                         <GeometryGroup>
-                            <RectangleGeometry Rect="0,0,100,100"/>
+                            <RectangleGeometry Rect="0,0,150,150"/>
                         </GeometryGroup>
                     </GeometryDrawing.Geometry>
                 </GeometryDrawing>
@@ -84,8 +85,8 @@
                     </GeometryDrawing.Brush>
                     <GeometryDrawing.Geometry>
                         <GeometryGroup>
-                            <RectangleGeometry Rect="50,0,50,50"/>
-                            <RectangleGeometry Rect="0,50,50,50"/>
+                            <RectangleGeometry Rect="75,0,75,75"/>
+                            <RectangleGeometry Rect="0,75,75,75"/>
                         </GeometryGroup>
                     </GeometryDrawing.Geometry>
                 </GeometryDrawing>
@@ -94,7 +95,7 @@
     </DrawingBrush>
 
     <ItemsPanelTemplate x:Key="BoardBackgroundTemplate">
-        <Grid Width="300" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
+        <Grid Width="450" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
               Background="{StaticResource BoardBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
