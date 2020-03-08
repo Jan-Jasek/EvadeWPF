@@ -20,7 +20,8 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="0.2*"/>
             </Grid.ColumnDefinitions>
-            <Menu VerticalAlignment="Top" Height="30" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <Menu VerticalAlignment="Top" Height="30"
+                  Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <MenuItem Header="Game">
                     <MenuItem Header="NewGame" Command="{Binding NewGameCommand}"/>
                     <MenuItem Header="SaveGame" Command="{Binding SaveGameCommand}"/>
@@ -28,15 +29,18 @@
                 </MenuItem>
                 <MenuItem Header="AI">
                     <MenuItem Header="WhitePlayer" IsCheckable="True"
-                              Command="{Binding IsWhitePlayerAI}"/>
+                              IsChecked="{Binding IsWhitePlayerAI, Mode=TwoWay}"/>
                     <MenuItem Header="BlackPlayer" IsCheckable="True"
-                              Command="{Binding IsBlackPlayerAI}"/>
+                              IsChecked="{Binding IsBlackPlayerAI, Mode=TwoWay}"/>
                 </MenuItem>
                 <MenuItem Header="Difficulty">
                     <MenuItem Header="WhitePlayer">
-                        <MenuItem Header="Random"/>
-                        <MenuItem Header="Dumb"/>
-                        <MenuItem Header="Smart"/>
+                        <MenuItem Header="Random" IsCheckable="True"
+                                  IsChecked="{Binding IsWhiteDifficultyRandom, Mode=TwoWay}"/>
+                        <MenuItem Header="Dumb" IsCheckable="True"
+                                  IsChecked="{Binding IsWhiteDifficultyDumb, Mode=TwoWay}"/>
+                        <MenuItem Header="Smart" IsCheckable="True"
+                                  IsChecked="{Binding IsWhiteDifficultySmart, Mode=TwoWay}"/>
                     </MenuItem>
                     <MenuItem Header="BlackPlayer">
                         <MenuItem Header="Random"/>
@@ -83,15 +87,15 @@
                             HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Button FontFamily="Marlett" FontSize="20" Content="3"
                             Command="{Binding UndoMoveCommand}"
-                            IsEnabled="{Binding IsUndoEnabled}"/>
+                            IsEnabled="{Binding IsUndoButtonEnabled}"/>
                     <Button Content="Best move"
                             Margin="10,0,0,0"
                             Command="{Binding PlayBestMoveCommand}"
-                            IsEnabled="{Binding IsEngineThinking, Converter={StaticResource InverseBooleanConverter}}"/>
+                            IsEnabled="{Binding IsListBoxEnabled}"/>
                     <Button FontFamily="Marlett" FontSize="20" Content="4"
                             Margin="10,0,0,0"
                             Command="{Binding RedoMoveCommand}"
-                            IsEnabled="{Binding IsRedoEnabled}"/>
+                            IsEnabled="{Binding IsRedoButtonEnabled}"/>
                 </StackPanel>
                 <Label Margin ="0,0,0,0" Content="{Binding PlayerOnTurn}"
                        HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>

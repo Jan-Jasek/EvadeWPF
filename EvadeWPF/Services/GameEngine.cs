@@ -21,6 +21,8 @@ namespace EvadeWPF.Services
         public event Action<string> OutputMessage;
         public event Action<string> RaiseEndGameTriggered;
         public event Action<bool> EngineThinkingChanged;
+        public bool IsGameEnded { get; set; }
+        public string GameWonBy { get; set; }
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         public bool IsEngineThinking
         {
@@ -29,13 +31,19 @@ namespace EvadeWPF.Services
             //EngineThinkingChanged(value);
         }
 
+        public GameEngine()
+        {
+
+        }
+
         public void PlayBestMove()
         {
-            CheckAITurn(cancellationTokenSource.Token, true);
+            CheckAITurn(AILevels.Smart, true);
         }
 
         public void StartEngine()
         {
+            cancellationTokenSource.Cancel();
             gameManager = new GameManager();
             gameManager.RaiseEndGameTriggered += GameEnded;
         }
@@ -47,21 +55,43 @@ namespace EvadeWPF.Services
 
         public void GameTurn()
         {
+            SendTurnToOutput();
             gameManager.DoGameTurn();
             IsEngineThinking = false;
             EngineThinkingChanged(false);
 
             PrintBoard(gameManager.GameBoard.GameArray);
-            CheckAITurn(cancellationTokenSource.Token);
+
+            if (IsGameEnded == true)
+            {
+                RaiseEndGameTriggered(GameWonBy);
+            }
         }
 
-        public async void CheckAITurn(CancellationToken cancellationToken, bool isTrue = false)
+        public void SendTurnToOutput()
+        {
+            string output;
+            string playerOrAI = gameManager.IsPlayerOnTurnAI ? "AI" : "Player";
+            string moveOutput = gameManager.Move[6] == (int)BoardValues.Frozen ? "The field is now frozen." : "";
+            output = $"{playerOrAI} moved {gameManager.Move[2]} from {gameManager.Move[0]}{gameManager.Move[1]} to {gameManager.Move[3]}{gameManager.Move[4]}. {moveOutput}";
+
+            OutputMessage(output);
+        }
+
+        public void CheckAITurn(AILevels aILevel, bool isTrue = false)
+        {
+            cancellationTokenSource = new CancellationTokenSource();
+            CheckAITurn(cancellationTokenSource.Token, isTrue, aILevel);
+        }
+
+        public async void CheckAITurn(CancellationToken cancellationToken,
+            bool isTrue, AILevels aiLevel)
         {
             if (gameManager.IsPlayerOnTurnAI || isTrue)
             {
                 IsEngineThinking = true;
                 EngineThinkingChanged(true);
-                gameManager.Move = await GetAITurn();
+                gameManager.Move = await GetAITurn(aiLevel);
                 if (cancellationToken.IsCancellationRequested)
                 {
                     IsEngineThinking = false;
@@ -70,16 +100,15 @@ namespace EvadeWPF.Services
                     PrintBoard(gameManager.GameBoard.GameArray);
 
                     cancellationTokenSource = new CancellationTokenSource();
-                    CheckAITurn(cancellationToken);
                     return;
                 }
 
                 GameTurn();
             }
         }
-        public async Task<List<int>> GetAITurn()
+        public async Task<List<int>> GetAITurn(AILevels aiLevel)
         {
-            var myTask = Task.Run(() => gameManager.GetAITurn());
+            var myTask = Task.Run(() => gameManager.GetAITurn(aiLevel));
             var Move = await myTask;
             return Move;
         }
@@ -112,8 +141,7 @@ namespace EvadeWPF.Services
                 return true;
 
             OutputMessage("Invalid move!");
-            gameManager.Move.Clear();
-            gameManager.Move.AddRange(TempMove);
+            gameManager.Move.RemoveRange(3,3);
             return false;
         }
 
@@ -122,7 +150,6 @@ namespace EvadeWPF.Services
         {
             gameManager.NewGame();
             gameManager.IsGameEndTriggered(gameManager.GameBoard.GameArray);
-            CheckAITurn(cancellationTokenSource.Token);
         }
 
         public void AddUnitsFromGameBoard(ObservableCollection<IBoardItem> boardItems)
@@ -143,7 +170,9 @@ namespace EvadeWPF.Services
         
         public void GameEnded(string message)
         {
-            RaiseEndGameTriggered(message);
+            cancellationTokenSource.Cancel();
+            GameWonBy = message;
+            IsGameEnded = true;
         }
 
         public void PrintBoard(int[,] consoleArray)
@@ -191,19 +220,18 @@ namespace EvadeWPF.Services
             cancellationTokenSource.Cancel();
             gameManager.UndoLastMove();
 
+            IsGameEnded = false;
+            GameWonBy = "";
             IsEngineThinking = false;
             EngineThinkingChanged(false);
-            cancellationTokenSource = new CancellationTokenSource();
 
             PrintBoard(gameManager.GameBoard.GameArray);
-            CheckAITurn(cancellationTokenSource.Token);
         }
 
         public void RedoMove()
         {
             cancellationTokenSource.Cancel();
             gameManager.GetMoveForRedo();
-            cancellationTokenSource = new CancellationTokenSource();
             GameTurn();
         }
     }

@@ -8,6 +8,8 @@ namespace EvadeLogic
 {
     public class ArtificialIntelligence
     {
+        public static AILevels AILevelW { get; set; } = AILevels.Smart;
+        public static AILevels AILevelB { get; set; } = AILevels.Random;
         public static List<List<int>> MoveList { get; set; } = new List<List<int>>();
         public static int Count { get; set; } = 0;
         public static int CountedGameScore { get; set; } = 0;
@@ -15,8 +17,6 @@ namespace EvadeLogic
         public static int CountedPawnsDistance { get; set; } = 0;
         public static int OutputRating { get; set; }
         public static List<int> OutputMove { get; set; }
-        public static AILevels AILevelW { get; set; } = AILevels.Smart;
-        public static AILevels AILevelB { get; set; } = AILevels.Smart;
         public static bool IsPlayerWTurn { get; set; }
 
         public static List<int> FindBestMove(AILevels aILevel, int[,] gameArray, bool isPlayerWTurn)

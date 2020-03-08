@@ -56,7 +56,7 @@ namespace EvadeLogic
 
         public bool IsSelectValid(List<int> move)
         {
-            return Rules.SelectedUnit_Check(move, GameBoard.TurnCounter);
+            return Rules.SelectedUnit_Check(move, GameBoard.TempTurnCounter);
         }
 
         public bool IsMoveValid(List<int> move)
@@ -95,15 +95,17 @@ namespace EvadeLogic
             }
             Move.Clear();
             IsNextMoveRedo = false;
-            IsGameEndTriggered(GameBoard.GameArray);
+            if (IsGameEndTriggered(GameBoard.GameArray))
+            {
+
+            }
         }
 
-        public List<int> GetAITurn()
+        public List<int> GetAITurn(AILevels aiLevel)
         {
-            var aILevel = IsPlayerWTurn ? ArtificialIntelligence.AILevelW : ArtificialIntelligence.AILevelB;
             ArtificialIntelligence.MoveList = new List<List<int>>(MoveList);
             int[,] testArray = CloneArray(GameBoard.GameArray);
-            Move = ArtificialIntelligence.FindBestMove(aILevel, testArray, IsPlayerWTurn);
+            Move = ArtificialIntelligence.FindBestMove(aiLevel, testArray, IsPlayerWTurn);
             return Move;
         
         }
