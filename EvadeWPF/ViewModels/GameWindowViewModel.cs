@@ -189,6 +189,8 @@ namespace EvadeWPF.ViewModels
             PlayerOnTurn = _engine.gameManager.IsPlayerWTurn ? "White" : "Black";
             IsBlackPlayerAI = _engine.gameManager.IsPlayerBAI;
             IsWhitePlayerAI = _engine.gameManager.IsPlayerWAI;
+            ArtificialIntelligence.AILevelB = AILevels.Smart;
+            ArtificialIntelligence.AILevelW = AILevels.Smart;
             IsUndoButtonEnabled = false;
             TurnCounterLabel = "0/0";
             _engine.AddUnitsFromGameBoard(BoardItems);
@@ -238,8 +240,8 @@ namespace EvadeWPF.ViewModels
                     new XElement("Setting",
                         new XElement("IsWhiteAI", IsWhitePlayerAI),
                         new XElement("IsBlackAI", IsBlackPlayerAI),
-                        new XElement("WhiteDifficulty", ArtificialIntelligence.AILevelW),
-                        new XElement("BlackDifficulty", ArtificialIntelligence.AILevelB)
+                        new XElement("WhiteDifficulty", (int)ArtificialIntelligence.AILevelW),
+                        new XElement("BlackDifficulty", (int)ArtificialIntelligence.AILevelB)
                     ),
                     ExportMoveHistoryToXML().Element("MoveHistory"))                
             );
@@ -295,10 +297,56 @@ namespace EvadeWPF.ViewModels
                 {
                     xmlDoc = XDocument.Load(openFileDlg.FileName);
                     _engine.AsyncCancelledInUI();
-                    moveList.AddRange(xmlDoc.Descendants("Move").Select(element => element.Value.Select(x => int.Parse(x.ToString())).ToList<int>()));
+                    moveList.AddRange(xmlDoc.Descendants("Move")
+                        .Select(element => element.Value
+                            .Select(x => int.Parse(x.ToString()))
+                            .ToList<int>()));
                     NewGame();
                     OutputTextBox = $"Loaded game {openFileDlg.FileName}";
+
+                    IsWhitePlayerAI = xmlDoc.Descendants("IsWhiteAI")
+                        .Select(element => bool.Parse(element.Value.ToString()))
+                        .FirstOrDefault();
+                    IsBlackPlayerAI = xmlDoc.Descendants("IsBlackAI")
+                        .Select(element => bool.Parse(element.Value.ToString()))
+                        .FirstOrDefault();
+
+                    var aiLevelW = xmlDoc.Descendants("WhiteDifficulty")
+                        .Select(element => (AILevels)int.Parse(element.Value.ToString()))
+                        .FirstOrDefault();
                     _engine.PlayMoveHistory(moveList);
+
+                    var aiLevelB = xmlDoc.Descendants("BlackDifficulty")
+                        .Select(element => (AILevels)int.Parse(element.Value.ToString()))
+                        .FirstOrDefault();
+                    _engine.PlayMoveHistory(moveList);
+
+
+                    if (aiLevelB == AILevels.Random)
+                    {
+                        IsBlackDifficultyRandom = true;
+                    }
+                    if (aiLevelB == AILevels.Dumb)
+                    {
+                        IsBlackDifficultyDumb = true;
+                    }
+                    if (aiLevelB == AILevels.Smart)
+                    {
+                        IsBlackDifficultySmart = true;
+                    }
+
+                    if (aiLevelW == AILevels.Random)
+                    {
+                        IsWhiteDifficultyRandom = true;
+                    }
+                    if (aiLevelW == AILevels.Dumb)
+                    {
+                        IsWhiteDifficultyDumb = true;
+                    }
+                    if (aiLevelW  == AILevels.Smart)
+                    {
+                        IsWhiteDifficultySmart = true;
+                    }
                 }
             }
             catch (Exception e)
