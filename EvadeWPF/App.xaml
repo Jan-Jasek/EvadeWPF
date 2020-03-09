@@ -5,7 +5,9 @@
              xmlns:helpers="clr-namespace:EvadeWPF.Helpers"
              StartupUri="GameWindow.xaml">
     <Application.Resources>
-         <ResourceDictionary>
+        <ResourceDictionary Source="/PresentationFramework.Aero, Version=3.0.0.0,
+        Culture=neutral, PublicKeyToken=31bf3856ad364e35,
+        ProcessorArchitecture=MSIL;component/themes/aero.normalcolor.xaml">
              <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GameWindowResources.xaml"/>
              </ResourceDictionary.MergedDictionaries>

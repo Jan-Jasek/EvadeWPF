@@ -7,6 +7,7 @@
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:helpers="clr-namespace:EvadeWPF.Helpers"
         xmlns:ctr="clr-namespace:EvadeWPF.Controls"
+        xmlns:system="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="EvadeWPF" Height="700" Width="1000">
     <Border Background="Bisque">
@@ -34,20 +35,52 @@
                               IsChecked="{Binding IsBlackPlayerAI, Mode=TwoWay}"/>
                 </MenuItem>
                 <MenuItem Header="Difficulty">
-                    <MenuItem Header="WhitePlayer">
+                    <MenuItem Header="WhitePlayer" 
+                              ItemContainerStyle="{StaticResource MenuItemRadioContainerStyle}">
                         <MenuItem Header="Random" IsCheckable="True"
+                                  Style="{StaticResource MenuItemRadio}"
                                   IsChecked="{Binding IsWhiteDifficultyRandom, Mode=TwoWay}"/>
                         <MenuItem Header="Dumb" IsCheckable="True"
+                                  Style="{StaticResource MenuItemRadio}"
                                   IsChecked="{Binding IsWhiteDifficultyDumb, Mode=TwoWay}"/>
                         <MenuItem Header="Smart" IsCheckable="True"
+                                  Style="{StaticResource MenuItemRadio}"
                                   IsChecked="{Binding IsWhiteDifficultySmart, Mode=TwoWay}"/>
                     </MenuItem>
-                    <MenuItem Header="BlackPlayer">
-                        <MenuItem Header="Random"/>
-                        <MenuItem Header="Dumb"/>
-                        <MenuItem Header="Smart"/>
+                    <MenuItem Header="BlackPlayer"
+                              ItemContainerStyle="{StaticResource MenuItemRadioContainerStyle}">
+                        <MenuItem 
+                            Style="{StaticResource MenuItemRadio}"
+                            IsCheckable="True"
+                            Header="Random"
+                            IsChecked="{Binding IsBlackDifficultyRandom, Mode=TwoWay}"/>
+                        <MenuItem 
+                            Style="{StaticResource MenuItemRadio}"
+                            IsCheckable="True"
+                            Header="Dumb"
+                            IsChecked="{Binding IsBlackDifficultyDumb, Mode=TwoWay}"/>
+                        <MenuItem 
+                            Style="{StaticResource MenuItemRadio}"
+                            IsCheckable="True"
+                            Header="Smart"
+                            IsChecked="{Binding IsBlackDifficultySmart, Mode=TwoWay}"/>
                     </MenuItem>
                 </MenuItem>
+                <!--<MenuItem Header="RadioButton Menu" ItemsSource="">
+                    <MenuItem.Resources>
+                        <RadioButton x:Key="RadioButtonResource" x:Shared="false" HorizontalAlignment="Center"
+                                     GroupName="MenuItemRadio" IsHitTestVisible="False"/>
+                    </MenuItem.Resources>
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Icon" Value="{DynamicResource RadioButtonResource}"/>
+                            <EventSetter Event="Click" Handler="MenuItemWithRadioButtons_Click" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
+                    <system:String>Random</system:String>
+                    <system:String>Dumb</system:String>
+                    <system:String>Smart</system:String>
+                </MenuItem>-->
             </Menu>
             <Grid Margin="0,0,0,0"
                   Grid.Column="0" Grid.Row="1">

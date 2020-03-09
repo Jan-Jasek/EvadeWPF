@@ -189,6 +189,19 @@ namespace EvadeWPF.ViewModels
             TurnCounterLabel = "0/0";
             _engine.AddUnitsFromGameBoard(BoardItems);
 
+            if (ArtificialIntelligence.AILevelB == AILevels.Random)
+            {
+                IsBlackDifficultyRandom = true;
+            }
+            if (ArtificialIntelligence.AILevelB == AILevels.Dumb)
+            {
+                IsBlackDifficultyDumb = true;
+            }
+            if (ArtificialIntelligence.AILevelB == AILevels.Smart)
+            {
+                IsBlackDifficultySmart = true;
+            }
+
             if (ArtificialIntelligence.AILevelW == AILevels.Random)
             {
                 IsWhiteDifficultyRandom = true;
@@ -300,9 +313,18 @@ namespace EvadeWPF.ViewModels
             get => _isWhiteDifficultyRandom;
             set
             {
-                _isWhiteDifficultyRandom = value;
+                if (value == false)
+                {
+                    _isWhiteDifficultyRandom = value;
+
+                    if (!IsWhiteDifficultySmart && !IsWhiteDifficultyDumb)
+                    {
+                        _isWhiteDifficultyRandom = true;
+                    }
+                }
                 if (value == true)
                 {
+                    _isWhiteDifficultyRandom = value;
                     IsWhiteDifficultyDumb = false;
                     IsWhiteDifficultySmart = false;
                     SetWDifficulty(AILevels.Random);
@@ -317,9 +339,19 @@ namespace EvadeWPF.ViewModels
             get => _isWhiteDifficultyDumb;
             set
             {
-                _isWhiteDifficultyDumb = value;
+                if (value == false)
+                {
+                    _isWhiteDifficultyDumb = value;
+
+                    if (!IsWhiteDifficultyRandom && !IsWhiteDifficultySmart)
+                    {
+                        _isWhiteDifficultyDumb = true;
+                    }
+                }
+
                 if (value == true)
                 {
+                    _isWhiteDifficultyDumb = value;
                     IsWhiteDifficultyRandom = false;
                     IsWhiteDifficultySmart = false;
                     SetWDifficulty(AILevels.Dumb);
@@ -334,9 +366,18 @@ namespace EvadeWPF.ViewModels
             get => _isWhiteDifficultySmart;
             set
             {
-                _isWhiteDifficultySmart = value;
+                if (value == false)
+                {
+                    _isWhiteDifficultySmart = value;
+
+                    if (!IsWhiteDifficultyRandom && !IsWhiteDifficultyDumb)
+                    {
+                        _isWhiteDifficultySmart = true;
+                    }
+                }
                 if (value == true)
                 {
+                    _isWhiteDifficultySmart = value;
                     IsWhiteDifficultyRandom = false;
                     IsWhiteDifficultyDumb = false;
                     SetWDifficulty(AILevels.Smart);
@@ -345,9 +386,92 @@ namespace EvadeWPF.ViewModels
             }
         }
 
+        private bool _isBlackDifficultyRandom;
+        public bool IsBlackDifficultyRandom
+        {
+            get => _isBlackDifficultyRandom;
+            set
+            {
+                if (value == false)
+                {
+                    _isBlackDifficultyRandom = value;
+                    if (!IsBlackDifficultyDumb && !IsBlackDifficultySmart)
+                    {
+                        _isBlackDifficultyRandom = true;
+                    }
+                }
+
+                if (value == true)
+                {
+                    _isBlackDifficultyRandom = value;
+                    IsBlackDifficultyDumb = false;
+                    IsBlackDifficultySmart = false;
+                    SetBDifficulty(AILevels.Random);
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _isBlackDifficultyDumb;
+        public bool IsBlackDifficultyDumb
+        {
+            get => _isBlackDifficultyDumb;
+            set
+            {
+                if (value == false)
+                {
+                    _isBlackDifficultyDumb = value;
+
+                    if (!IsBlackDifficultyRandom && !IsBlackDifficultySmart)
+                    {
+                        _isBlackDifficultyDumb = true;
+                    }
+                }
+                if (value == true)
+                {
+                    _isBlackDifficultyDumb = value;
+                    IsBlackDifficultyRandom = false;
+                    IsBlackDifficultySmart = false;
+                    SetBDifficulty(AILevels.Dumb);
+                }
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool _isBlackDifficultySmart;
+        public bool IsBlackDifficultySmart
+        {
+            get => _isBlackDifficultySmart;
+            set
+            {
+                if (value == false)
+                {
+                    _isBlackDifficultySmart = value;
+
+                    if (!IsBlackDifficultyRandom && !IsBlackDifficultyDumb)
+                    {
+                        _isBlackDifficultySmart = true;
+                    }
+                }
+
+                if (value == true)
+                {
+                    _isBlackDifficultySmart = value;
+                    IsBlackDifficultyRandom = false;
+                    IsBlackDifficultyDumb = false;
+                    SetBDifficulty(AILevels.Smart);
+                }
+                RaisePropertyChanged();
+            }
+        }
+
         public void SetWDifficulty(AILevels aILevel)
         {
             ArtificialIntelligence.AILevelW = aILevel;
+        }
+        public void SetBDifficulty(AILevels aILevel)
+        {
+            ArtificialIntelligence.AILevelB = aILevel;
         }
 
         private string _playerOnTurn;
