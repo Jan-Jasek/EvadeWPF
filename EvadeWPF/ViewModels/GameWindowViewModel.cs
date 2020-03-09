@@ -6,7 +6,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Xml;
 using System.Xml.Linq;
@@ -169,9 +171,10 @@ namespace EvadeWPF.ViewModels
 
         private void NewGame()
         {
+            _engine.AsyncCancelledInUI();
             IsGameEnded = false;
             IsListBoxEnabled = false;
-            OutputMessage(AppConstants.NewGameStarted);
+            OutputTextBox = AppConstants.NewGameStarted;
             BoardItems.Clear();
             _engine.StartEngine();
             for (int i = 1; i <= 6; i++)
@@ -241,10 +244,19 @@ namespace EvadeWPF.ViewModels
                     ExportMoveHistoryToXML().Element("MoveHistory"))                
             );
 
-            if (saveFileDialog.ShowDialog() == true)
+
+            try
             {
-                xmlDoc.Save(saveFileDialog.FileName);
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    xmlDoc.Save(saveFileDialog.FileName);
+                }
             }
+            catch(Exception e)
+            { 
+                MessageBox.Show($"Unable to save file \n{e.Message}", "Save game error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
         }
 
         private XDocument ExportMoveHistoryToXML()
@@ -270,44 +282,29 @@ namespace EvadeWPF.ViewModels
 
         private void LoadGame()
         {
-            //Loading XML document using file dialog
-            //XmlDocument xmlData = new XmlDocument();
+            OpenFileDialog openFileDlg = new OpenFileDialog();
+            openFileDlg.DefaultExt = ".xml";
+            openFileDlg.Filter = "XML Files (*.xml)|*.xml";
 
-            //OpenFileDialog openFileDlg = new OpenFileDialog();
-            //openFileDlg.DefaultExt = ".xml";
-            //openFileDlg.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+            List<List<int>> moveList = new List<List<int>>();
+            XDocument xmlDoc = new XDocument();
 
-            //try
-            //{
-            //    if (openFileDlg.ShowDialog() == true)
-            //    {
-            //        xmlData.Load(openFileDlg.FileName);
-            //        CreateCarList(xmlData);
-            //    }
-            //}
-
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show($"Nepodařilo se načíst soubor \n{e.Message}", "Chyba načtení", MessageBoxButton.OK, MessageBoxImage.Warning);
-            //}
-
-            //XmlNode CarsNode = xmlData.DocumentElement;
-
-            ////Create list of cars from XML input
-            //foreach (XmlNode CarNode in CarsNode.ChildNodes)
-            //{
-            //    if (CarNode.Name.Equals("car"))
-            //    {
-            //        XmlNodeList CarDetails = CarNode.ChildNodes;
-
-            //        Car car = new Car(CarDetails.Item(0).InnerText.ToString(),
-            //            DateTime.Parse(CarDetails.Item(1).InnerText.ToString()),
-            //            MainWindow.ParseDouble(CarDetails.Item(2).InnerText.ToString(), -1000),
-            //            MainWindow.ParseDouble(CarDetails.Item(3).InnerText.ToString(), -1000));
-            //        CarList.Add(car);
-
-            //    }
-            //}
+            try
+            {
+                if (openFileDlg.ShowDialog() == true)
+                {
+                    xmlDoc = XDocument.Load(openFileDlg.FileName);
+                    _engine.AsyncCancelledInUI();
+                    moveList.AddRange(xmlDoc.Descendants("Move").Select(element => element.Value.Select(x => int.Parse(x.ToString())).ToList<int>()));
+                    NewGame();
+                    OutputTextBox = $"Loaded game {openFileDlg.FileName}";
+                    _engine.PlayMoveHistory(moveList);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Unable to load file \n{e.Message}", "Load game error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private bool _isUndoButtonEnabled = false;

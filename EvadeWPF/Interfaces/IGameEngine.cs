@@ -29,5 +29,7 @@ namespace EvadeWPF.Interfaces
         void UndoMove();
         void RedoMove();
         void CheckAITurn(AILevels aILevel, bool isTrue = false);
+        void PlayMoveHistory(List<List<int>> moveHistory);
+        void AsyncCancelledInUI();
     }
 }

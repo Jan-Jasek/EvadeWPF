@@ -112,6 +112,28 @@ namespace EvadeWPF.Services
             CheckAITurn(cancellationTokenSource.Token, isTrue, aILevel);
         }
 
+        public void PlayMoveHistory(List<List<int>> moveHistory)
+        {
+            foreach (var move in moveHistory)
+            {
+                gameManager.Move = new List<int>(move);
+                gameManager.DoGameTurn();
+            }
+
+            IsEngineThinking = false;
+            EngineThinkingChanged(false);
+
+            if (IsGameEnded == true)
+            {
+                RaiseEndGameTriggered(GameWonBy);
+            }
+        }
+
+        public void AsyncCancelledInUI()
+        {
+            cancellationTokenSource.Cancel();
+        }
+
         public async void CheckAITurn(CancellationToken cancellationToken,
             bool isTrue, AILevels aiLevel)
         {
@@ -177,6 +199,8 @@ namespace EvadeWPF.Services
         public void NewGame()
         {
             gameManager.NewGame();
+            IsGameEnded = false;
+            GameWonBy = "";
             gameManager.IsGameEndTriggered(gameManager.GameBoard.GameArray);
         }
 
