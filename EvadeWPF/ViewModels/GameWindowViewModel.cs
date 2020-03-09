@@ -189,7 +189,7 @@ namespace EvadeWPF.ViewModels
             PlayerOnTurn = _engine.gameManager.IsPlayerWTurn ? "White" : "Black";
             IsBlackPlayerAI = _engine.gameManager.IsPlayerBAI;
             IsWhitePlayerAI = _engine.gameManager.IsPlayerWAI;
-            ArtificialIntelligence.AILevelB = AILevels.Smart;
+            ArtificialIntelligence.AILevelB = AILevels.Random;
             ArtificialIntelligence.AILevelW = AILevels.Smart;
             IsUndoButtonEnabled = false;
             TurnCounterLabel = "0/0";
