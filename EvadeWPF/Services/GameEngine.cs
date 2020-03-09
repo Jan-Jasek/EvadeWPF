@@ -117,6 +117,7 @@ namespace EvadeWPF.Services
             foreach (var move in moveHistory)
             {
                 gameManager.Move = new List<int>(move);
+                SendTurnToOutput();
                 gameManager.DoGameTurn();
             }
 
