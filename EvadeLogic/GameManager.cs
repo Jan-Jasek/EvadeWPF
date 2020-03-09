@@ -101,11 +101,11 @@ namespace EvadeLogic
             }
         }
 
-        public List<int> GetAITurn(AILevels aiLevel)
+        public List<int> GetAITurn(CancellationToken cancellationToken, AILevels aiLevel)
         {
             ArtificialIntelligence.MoveList = new List<List<int>>(MoveList);
             int[,] testArray = CloneArray(GameBoard.GameArray);
-            Move = ArtificialIntelligence.FindBestMove(aiLevel, testArray, IsPlayerWTurn);
+            Move = ArtificialIntelligence.FindBestMove(cancellationToken, aiLevel, testArray, IsPlayerWTurn);
             return Move;
         
         }

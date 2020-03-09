@@ -119,7 +119,7 @@ namespace EvadeWPF.Services
             {
                 IsEngineThinking = true;
                 EngineThinkingChanged(true);
-                gameManager.Move = await GetAITurn(aiLevel);
+                gameManager.Move = await GetAITurn(cancellationToken, aiLevel);
                 if (cancellationToken.IsCancellationRequested)
                 {
                     IsEngineThinking = false;
@@ -134,9 +134,9 @@ namespace EvadeWPF.Services
                 GameTurn();
             }
         }
-        public async Task<List<int>> GetAITurn(AILevels aiLevel)
+        public async Task<List<int>> GetAITurn(CancellationToken cancellationToken, AILevels aiLevel)
         {
-            var myTask = Task.Run(() => gameManager.GetAITurn(aiLevel));
+            var myTask = Task.Run(() => gameManager.GetAITurn(cancellationToken, aiLevel));
             var Move = await myTask;
             return Move;
         }

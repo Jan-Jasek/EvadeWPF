@@ -4,19 +4,18 @@
     <IsWhiteAI>false</IsWhiteAI>
     <IsBlackAI>true</IsBlackAI>
     <WhiteDifficulty>Smart</WhiteDifficulty>
-    <BlackDifficulty>Random</BlackDifficulty>
+    <BlackDifficulty>Smart</BlackDifficulty>
   </Setting>
   <MoveHistory>
-    <Move>6616500</Move>
-    <Move>4144200</Move>
-    <Move>6515500</Move>
-    <Move>4245300</Move>
-    <Move>5514500</Move>
+    <Move>5614500</Move>
     <Move>6126200</Move>
-    <Move>4513500</Move>
-    <Move>5124100</Move>
-    <Move>3513400</Move>
-    <Move>3143200</Move>
-    <Move>3414400</Move>
+    <Move>4514400</Move>
+    <Move>2121200</Move>
+    <Move>3634500</Move>
+    <Move>6226300</Move>
+    <Move>4413300</Move>
+    <Move>6325400</Move>
+    <Move>4533600</Move>
+    <Move>1122200</Move>
   </MoveHistory>
 </Game>

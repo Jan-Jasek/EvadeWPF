@@ -2,6 +2,7 @@
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using AppShared;
 
 namespace EvadeLogic
@@ -19,7 +20,7 @@ namespace EvadeLogic
         public static List<int> OutputMove { get; set; }
         public static bool IsPlayerWTurn { get; set; }
 
-        public static List<int> FindBestMove(AILevels aILevel, int[,] gameArray, bool isPlayerWTurn)
+        public static List<int> FindBestMove(CancellationToken cancellationToken, AILevels aILevel, int[,] gameArray, bool isPlayerWTurn)
         {
 
             if (aILevel == 0)
@@ -41,7 +42,7 @@ namespace EvadeLogic
             foreach (var move in MoveList.ToList())
             {
                 DoTempMove(move, gameArray);
-                int rating = -AlphaBeta(gameArray, AppConstants.Depth, false, -AppConstants.Max, Dal(AppConstants.Max));
+                int rating = -AlphaBeta(gameArray, AppConstants.Depth, false, -AppConstants.Max, Dal(AppConstants.Max), cancellationToken);
                 UndoTempMove(move, gameArray);
                 //Increases the value for frozing moves
                 rating += (Hunting((move[5]), (move[6])) * (AppConstants.Depth + 1));
@@ -65,9 +66,13 @@ namespace EvadeLogic
             return 0;
         }
 
-        public static int AlphaBeta(int[,] gameArray, int depth, bool maximizingPlayer, int alpha, int beta,
+        public static int AlphaBeta(int[,] gameArray, int depth, bool maximizingPlayer, int alpha, int beta, CancellationToken cancellationToken,
                                     string movex = "")
         {
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return 0;
+            }
             int rating = -AppConstants.Max;
 
             //If Tie
@@ -119,7 +124,7 @@ namespace EvadeLogic
                 //int[,] gameArray2 = HelperMethods.CloneArray(gameArray);
                 DoTempMove(move, gameArray);
 
-                rating = -AlphaBeta(gameArray, depth - 1, !maximizingPlayer, Dal(-beta), Dal(-alpha));
+                rating = -AlphaBeta(gameArray, depth - 1, !maximizingPlayer, Dal(-beta), Dal(-alpha), cancellationToken);
 
                 //Increases evaluation of frozing moves with respect to the count of moves needed
                 //rating += HelperMethods.ToInt(move[6]) * depth;
