@@ -314,7 +314,6 @@ namespace EvadeWPF.ViewModels
                     var aiLevelW = xmlDoc.Descendants("WhiteDifficulty")
                         .Select(element => (AILevels)int.Parse(element.Value.ToString()))
                         .FirstOrDefault();
-                    _engine.PlayMoveHistory(moveList);
 
                     var aiLevelB = xmlDoc.Descendants("BlackDifficulty")
                         .Select(element => (AILevels)int.Parse(element.Value.ToString()))
