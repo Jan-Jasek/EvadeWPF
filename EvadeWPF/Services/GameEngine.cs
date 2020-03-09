@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
@@ -72,8 +73,35 @@ namespace EvadeWPF.Services
         {
             string output;
             string playerOrAI = gameManager.IsPlayerOnTurnAI ? "AI" : "Player";
-            string moveOutput = gameManager.Move[6] == (int)BoardValues.Frozen ? "The field is now frozen." : "";
-            output = $"{playerOrAI} moved {gameManager.Move[2]} from {gameManager.Move[0]}{gameManager.Move[1]} to {gameManager.Move[3]}{gameManager.Move[4]}. {moveOutput}";
+            string moveOutput = gameManager.Move[6] == (int)TurnResults.Frozen ? "The field is now frozen." : "";
+            string selectedColumn = "";
+            string targetColumn = "";
+            string selectedPiece = "";
+
+            foreach (KeyValuePair<string, int> item in AppConstants.ColumnValues)
+            {
+                if (item.Value == int.Parse(gameManager.Move[0].ToString()))
+                {
+                    selectedColumn = item.Key;
+                }
+
+                if (item.Value == int.Parse(gameManager.Move[3].ToString()))
+                {
+                     targetColumn = item.Key;
+                }
+            }
+
+            foreach (KeyValuePair<string, int> item in AppConstants.PieceValues)
+            {
+                if (item.Value == int.Parse(gameManager.Move[2].ToString()))
+                {
+                    selectedPiece = item.Key;
+                    break;
+                }
+            }
+
+
+            output = $"{playerOrAI} moved {selectedPiece} from {selectedColumn}{gameManager.Move[1]} to {targetColumn}{gameManager.Move[4]}. {moveOutput}";
 
             OutputMessage(output);
         }
@@ -127,7 +155,7 @@ namespace EvadeWPF.Services
                 return true;
             }
 
-            OutputMessage("Invalid select!");
+            //OutputMessage("Invalid select!");
             return false;
         }
 

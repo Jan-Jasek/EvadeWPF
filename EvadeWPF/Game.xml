@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Game>
+  <Setting>
+    <IsWhiteAI>false</IsWhiteAI>
+    <IsBlackAI>true</IsBlackAI>
+    <WhiteDifficulty>Smart</WhiteDifficulty>
+    <BlackDifficulty>Random</BlackDifficulty>
+  </Setting>
+  <MoveHistory>
+    <Move>6616500</Move>
+    <Move>4144200</Move>
+    <Move>6515500</Move>
+    <Move>4245300</Move>
+    <Move>5514500</Move>
+    <Move>6126200</Move>
+    <Move>4513500</Move>
+    <Move>5124100</Move>
+    <Move>3513400</Move>
+    <Move>3143200</Move>
+    <Move>3414400</Move>
+  </MoveHistory>
+</Game>

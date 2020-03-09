@@ -40,6 +40,14 @@ namespace AppShared
             {"F",6}
         };
 
+        public static Dictionary<string, int> PieceValues = new Dictionary<string, int>()
+        {
+            {"White Pawn",1},
+            {"Black Pawn",2},
+            {"White King",3},
+            {"Black King",4}
+        };
+
         public static Dictionary<string, string> OptionsValues = new Dictionary<string, string>()
         {
             {"A3","Select or move to field A3"},

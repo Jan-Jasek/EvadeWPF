@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
+using System.Xml.Linq;
 using AppShared;
 using EvadeLogic;
 using EvadeWPF.Annotations;
@@ -229,15 +230,37 @@ namespace EvadeWPF.ViewModels
             saveFileDialog.FileName = "Game";
             saveFileDialog.DefaultExt = "xml";
 
-            using (XmlWriter writer = XmlWriter.Create(@saveFileDialog.FileName))
-            {
-
-            }
+            XDocument xmlDoc = new XDocument(
+                new XElement("Game",
+                    new XElement("Setting",
+                        new XElement("IsWhiteAI", IsWhitePlayerAI),
+                        new XElement("IsBlackAI", IsBlackPlayerAI),
+                        new XElement("WhiteDifficulty", ArtificialIntelligence.AILevelW),
+                        new XElement("BlackDifficulty", ArtificialIntelligence.AILevelB)
+                    ),
+                    ExportMoveHistoryToXML().Element("MoveHistory"))                
+            );
 
             if (saveFileDialog.ShowDialog() == true)
             {
-
+                xmlDoc.Save(saveFileDialog.FileName);
             }
+        }
+
+        private XDocument ExportMoveHistoryToXML()
+        {
+            XDocument xmlDoc = new XDocument(new XElement("MoveHistory"));
+            //var characters = document.Descendants(ns + "Characters").FirstOrDefault();
+
+            string output = "";
+            foreach (var list in _engine.gameManager.MoveHistory)
+            {
+                list.ForEach((i) => output += i.ToString());
+                xmlDoc.Root.Add(new XElement("Move",output));
+                output = "";
+            }
+
+            return xmlDoc;
         }
 
         public ICommand LoadGameCommand
@@ -247,7 +270,44 @@ namespace EvadeWPF.ViewModels
 
         private void LoadGame()
         {
-            throw new NotImplementedException();
+            //Loading XML document using file dialog
+            //XmlDocument xmlData = new XmlDocument();
+
+            //OpenFileDialog openFileDlg = new OpenFileDialog();
+            //openFileDlg.DefaultExt = ".xml";
+            //openFileDlg.Filter = "XML Files (*.xml)|*.xml|All Files (*.*)|*.*";
+
+            //try
+            //{
+            //    if (openFileDlg.ShowDialog() == true)
+            //    {
+            //        xmlData.Load(openFileDlg.FileName);
+            //        CreateCarList(xmlData);
+            //    }
+            //}
+
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show($"Nepodařilo se načíst soubor \n{e.Message}", "Chyba načtení", MessageBoxButton.OK, MessageBoxImage.Warning);
+            //}
+
+            //XmlNode CarsNode = xmlData.DocumentElement;
+
+            ////Create list of cars from XML input
+            //foreach (XmlNode CarNode in CarsNode.ChildNodes)
+            //{
+            //    if (CarNode.Name.Equals("car"))
+            //    {
+            //        XmlNodeList CarDetails = CarNode.ChildNodes;
+
+            //        Car car = new Car(CarDetails.Item(0).InnerText.ToString(),
+            //            DateTime.Parse(CarDetails.Item(1).InnerText.ToString()),
+            //            MainWindow.ParseDouble(CarDetails.Item(2).InnerText.ToString(), -1000),
+            //            MainWindow.ParseDouble(CarDetails.Item(3).InnerText.ToString(), -1000));
+            //        CarList.Add(car);
+
+            //    }
+            //}
         }
 
         private bool _isUndoButtonEnabled = false;
