@@ -56,7 +56,7 @@ namespace EvadeWPF.Services
 
         public void GameTurn()
         {
-            SendTurnToOutput();
+            OutputMessage(TurnToOutput(gameManager.Move));
             gameManager.DoGameTurn();
             IsEngineThinking = false;
             EngineThinkingChanged(false);
@@ -69,41 +69,15 @@ namespace EvadeWPF.Services
             }
         }
 
-        public void SendTurnToOutput()
+        public string TurnToOutput(List<int> move)
         {
-            string output;
             string playerOrAI = gameManager.IsPlayerOnTurnAI ? "AI" : "Player";
-            string moveOutput = gameManager.Move[6] == (int)TurnResults.Frozen ? "The field is now frozen." : "";
-            string selectedColumn = "";
-            string targetColumn = "";
-            string selectedPiece = "";
+            string moveOutput = move[6] == (int)TurnResults.Frozen ? "The field is now frozen." : "";
+            string selectedColumn = AppConstants.ParseColumnValues(move[0].ToString());
+            string targetColumn = AppConstants.ParseColumnValues(move[3].ToString());
+            string selectedPiece = AppConstants.ParsePieceValues(move[2].ToString());
 
-            foreach (KeyValuePair<string, int> item in AppConstants.ColumnValues)
-            {
-                if (item.Value == int.Parse(gameManager.Move[0].ToString()))
-                {
-                    selectedColumn = item.Key;
-                }
-
-                if (item.Value == int.Parse(gameManager.Move[3].ToString()))
-                {
-                     targetColumn = item.Key;
-                }
-            }
-
-            foreach (KeyValuePair<string, int> item in AppConstants.PieceValues)
-            {
-                if (item.Value == int.Parse(gameManager.Move[2].ToString()))
-                {
-                    selectedPiece = item.Key;
-                    break;
-                }
-            }
-
-
-            output = $"{playerOrAI} moved {selectedPiece} from {selectedColumn}{gameManager.Move[1]} to {targetColumn}{gameManager.Move[4]}. {moveOutput}";
-
-            OutputMessage(output);
+            return $"{playerOrAI} moved {selectedPiece} from {selectedColumn}{move[1]} to {targetColumn}{move[4]}. {moveOutput}";
         }
 
         public void CheckAITurn(AILevels aILevel, bool isTrue = false)
@@ -117,7 +91,7 @@ namespace EvadeWPF.Services
             foreach (var move in moveHistory)
             {
                 gameManager.Move = new List<int>(move);
-                SendTurnToOutput();
+                OutputMessage(TurnToOutput(gameManager.Move));
                 gameManager.DoGameTurn();
             }
 
@@ -271,8 +245,10 @@ namespace EvadeWPF.Services
         public void UndoMove()
         {
             cancellationTokenSource.Cancel();
+            var move = new List<int>(gameManager.MoveHistory[gameManager.GameBoard.TempTurnCounter - 1]);
             gameManager.UndoLastMove();
 
+            OutputMessage(TurnToOutput(move));
             IsGameEnded = false;
             GameWonBy = "";
             IsEngineThinking = false;

@@ -60,7 +60,7 @@ namespace AppShared
             {"!EndGame","Ends current game." }
         };
 
-        public static string NewGameStarted = "New game has started!";
+        public static string NewGameStarted = "New game has started!\n";
         public static string WrongFieldSelected = "Invalid field selected. Please select a valid field.\n";
         public static string WrongMoveSelected = "Invalid move.\n";
         public static string FieldFrozen = "The field is now frozen. ";
@@ -88,6 +88,34 @@ namespace AppShared
         public const string EndGame = "!ENDGAME";
 
         public static Random Rnd { get; set; } = new Random();
+
+
+        public static string ParseColumnValues(string columnNumber)
+        {
+            foreach (KeyValuePair<string, int> item in ColumnValues)
+            {
+                if (item.Value == int.Parse(columnNumber))
+                {
+                    return item.Key;
+                }
+            }
+
+            return "";
+        }
+
+        public static string ParsePieceValues(string pieceNumber)
+        {
+            foreach (KeyValuePair<string, int> item in AppConstants.PieceValues)
+            {
+                if (item.Value == int.Parse(pieceNumber))
+                {
+                    return item.Key;
+                }
+            }
+
+            return "";
+        }
+
     }
 }
 
