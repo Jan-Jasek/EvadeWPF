@@ -10,7 +10,7 @@ namespace EvadeWPF
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class GameWindow : Window
+    public partial class GameWindow
     {
         private Boolean _autoScroll = true;
 

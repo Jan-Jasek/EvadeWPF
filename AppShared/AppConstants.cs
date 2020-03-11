@@ -6,7 +6,7 @@ namespace AppShared
 
     public enum BoardValues
     {
-        Empty = 0, WhitePawn = 1, BlackPawn = 2, WhiteKing = 3, BlackKing = 4, Frozen = 5, Barrier = 7
+        Empty = 0, WhitePawn = 1, BlackPawn = 2, WhiteKing = 3, BlackKing = 4, Frozen = 5, Barrier = 7, Recommended = 9
 
     }
 

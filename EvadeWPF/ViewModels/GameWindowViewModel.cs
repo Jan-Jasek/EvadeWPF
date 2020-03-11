@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -135,6 +136,57 @@ namespace EvadeWPF.ViewModels
             }
         }
 
+        public void Help()
+        {
+            Thread viewThread = new Thread(() =>
+            {
+                HelpWindow view = new HelpWindow();
+                //CodeRequestViewModel viewModel = new CodeRequestViewModel();
+                view.ShowDialog();
+            });
+            viewThread.SetApartmentState(ApartmentState.STA);
+            viewThread.Start();
+        }
+
+
+        public ICommand HelpCommand
+        {
+            get
+            {
+                return new DelegateCommand(() =>
+                {
+                    Help();
+                });
+            }
+        }
+
+        public void Rules()
+        {
+            try
+            {
+                String fileName = "D:\\VSProjects\\EvadeWPF\\EvadeWPF\\Evade.pdf";
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                process.StartInfo.FileName = fileName;
+                process.Start();
+                process.WaitForExit();
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show($"Unable to load Rules file \n{e.Message}", "Load pdf error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        public ICommand RulesCommand
+        {
+            get
+            {
+                return new DelegateCommand(() =>
+                {
+                    Rules();
+                });
+            }
+        }
+
         public ICommand UndoMoveCommand
         {
             get { return new DelegateCommand(() =>
@@ -159,7 +211,6 @@ namespace EvadeWPF.ViewModels
         {
             get { return new DelegateCommand(() =>
             {
-                OutputMessage("PlayBestMove:");
                 _engine.PlayBestMove();
             });}
         }
@@ -600,6 +651,43 @@ namespace EvadeWPF.ViewModels
             }
         }
 
+        private int _currentMoveFromHistory;
+        public int CurrentMoveFromHistory
+        {
+            get => _currentMoveFromHistory;
+            set
+            {
+                _currentMoveFromHistory = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        public ObservableCollection<string> MoveHistory { get; set; } = new ObservableCollection<string>();
+
+        public void SynchronizeMoveHistory()
+        {
+            MoveHistory.Clear();
+            int i = 1;
+
+            foreach (var move in _engine.gameManager.MoveHistory)
+            {
+                string selectedColumn = AppConstants.ParseColumnValues(move[0].ToString());
+                string targetColumn = AppConstants.ParseColumnValues(move[3].ToString());
+                string selectedPiece = AppConstants.ParsePieceValues(move[2].ToString());
+
+                MoveHistory.Add(i
+                                + ": "
+                                + (i % 2 == 1 ? "White" : "Black")
+                                + " from "
+                                + $"{selectedColumn}{move[1]}"
+                                + " to "
+                                + $"{targetColumn}{move[4]}");
+                i++;
+            }
+
+            CurrentMoveFromHistory = _engine.gameManager.GameBoard.TempTurnCounter -1;
+        }
+
         private string _moveHistoryTextBlock;
         public string MoveHistoryTextBlock
         {
@@ -626,7 +714,7 @@ namespace EvadeWPF.ViewModels
         {
             IsListBoxEnabled = false;
             SelectedBoardItem = null;
-            _engine.GameTurn();
+            _engine.GameTurn(false);
             ResetAfterMove();
         }
 
@@ -639,6 +727,7 @@ namespace EvadeWPF.ViewModels
 
         private void OutputMessage(string message)
         {
+            SynchronizeMoveHistory();
             OutputLogTextBox = OutputLogTextBox + message + "\n";
         }
 

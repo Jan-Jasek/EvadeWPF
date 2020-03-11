@@ -9,15 +9,12 @@ namespace EvadeLogic
 {
     public class GameManager
     {
-        #region Private fields
+        #region Public properties
 
         public GameBoard GameBoard { get; private set; }
         //FormatLog = Column-row-unit-column-row-unit-turnResult
-
         public List<int> Move = new List<int>();
         public List<List<int>> MoveHistory { get; set; } = new List<List<int>>();
-        #endregion
-        #region Public properties
         public List<List<int>> MoveList { get; set; } = new List<List<int>>();
         public bool IsGameRunning { get; set; } = false;
         public bool IsPlayerWTurn { get; set; } = true;
@@ -93,7 +90,6 @@ namespace EvadeLogic
                 IsPlayerWTurn = (GameBoard.TurnCounter % 2 != 1);
                 MoveHistory.Add(new List<int>(Move));
             }
-            Move.Clear();
             IsNextMoveRedo = false;
             if (IsGameEndTriggered(GameBoard.GameArray))
             {

@@ -116,7 +116,7 @@ namespace EvadeLogic
             if (!HelperMethods.EqualsAny(move[5], (int)BoardValues.Barrier, (int)BoardValues.Frozen))
             {
                 //if empty, move is valid
-                if (move[5] == (int)BoardValues.Empty)
+                if (move[5] == (int)BoardValues.Empty || move[5] == (int)BoardValues.Recommended)
                 {
                     move.Add((int)TurnResults.Moved);
                     return true;

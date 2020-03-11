@@ -21,10 +21,9 @@ namespace EvadeWPF.Interfaces
         event Action<bool> EngineThinkingChanged;
         bool IsSelectValid(IBoardItem boardItem);
         bool IsMoveValid(IBoardItem boardItem);
-        void GameTurn();
+        void GameTurn(bool redo);
         void NewGame();
         void AddUnitsFromGameBoard(ObservableCollection<IBoardItem> boardItems);
-        bool IsEngineThinking { get; set; }
         void PlayBestMove();
         void UndoMove();
         void RedoMove();

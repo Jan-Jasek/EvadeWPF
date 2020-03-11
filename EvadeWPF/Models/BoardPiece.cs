@@ -14,6 +14,6 @@ namespace EvadeWPF.Models
         public int Row { get; set; }
         public int Col { get; set; }
         public BoardValues PieceType {get; set; }
-
+        public bool RecommendedMove { get; set; } = false;
     }
 }

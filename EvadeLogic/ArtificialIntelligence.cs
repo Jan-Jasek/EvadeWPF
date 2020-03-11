@@ -69,6 +69,7 @@ namespace EvadeLogic
         public static int AlphaBeta(int[,] gameArray, int depth, bool maximizingPlayer, int alpha, int beta, CancellationToken cancellationToken,
                                     string movex = "")
         {
+            List<List<int>> moveList = new List<List<int>>();
             if (cancellationToken.IsCancellationRequested)
             {
                 return 0;
@@ -87,7 +88,7 @@ namespace EvadeLogic
                 if (Rules.GameEndPlayerWWin(gameArray, new List<List<int>>()))
                     return AppConstants.Max;
                 //If lost
-                if (Rules.GameEndPlayerBWin(gameArray, MoveList))
+                if (Rules.GameEndPlayerBWin(gameArray, moveList))
                     return -AppConstants.Max;
             }
             //IS playerB turn
@@ -97,7 +98,7 @@ namespace EvadeLogic
                 if (Rules.GameEndPlayerBWin(gameArray, new List<List<int>>()))
                     return AppConstants.Max;
                 //If lost
-                if (Rules.GameEndPlayerWWin(gameArray, MoveList))
+                if (Rules.GameEndPlayerWWin(gameArray, moveList))
                     return -AppConstants.Max;
             }
 
@@ -118,8 +119,8 @@ namespace EvadeLogic
                 return rating;
             }
 
-            MoveList.Shuffle();
-            foreach (var move in MoveList.ToList())
+            moveList.Shuffle();
+            foreach (var move in moveList.ToList())
             {
                 //int[,] gameArray2 = HelperMethods.CloneArray(gameArray);
                 DoTempMove(move, gameArray);

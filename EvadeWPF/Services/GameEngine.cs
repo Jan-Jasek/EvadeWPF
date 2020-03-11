@@ -22,6 +22,7 @@ namespace EvadeWPF.Services
         public event Action<string> OutputMessage;
         public event Action<string> RaiseEndGameTriggered;
         public event Action<bool> EngineThinkingChanged;
+        public List<int> RecommendedMove;
         public bool IsGameEnded { get; set; }
         public string GameWonBy { get; set; }
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -54,19 +55,29 @@ namespace EvadeWPF.Services
             gameManager = null;
         }
 
-        public void GameTurn()
+        public void GameTurn(bool redo = false)
         {
-            OutputMessage(TurnToOutput(gameManager.Move));
             gameManager.DoGameTurn();
+
             IsEngineThinking = false;
             EngineThinkingChanged(false);
 
+
+
+            OutputMessage(TurnToOutput(gameManager.Move));
             PrintBoard(gameManager.GameBoard.GameArray);
+
+
+            gameManager.Move.Clear();
+
+
 
             if (IsGameEnded == true)
             {
                 RaiseEndGameTriggered(GameWonBy);
             }
+            if(!redo)
+                CheckAITurn(gameManager.IsPlayerWTurn ? ArtificialIntelligence.AILevelW : ArtificialIntelligence.AILevelB);
         }
 
         public string TurnToOutput(List<int> move)
@@ -110,9 +121,9 @@ namespace EvadeWPF.Services
         }
 
         public async void CheckAITurn(CancellationToken cancellationToken,
-            bool isTrue, AILevels aiLevel)
+            bool find, AILevels aiLevel)
         {
-            if (gameManager.IsPlayerOnTurnAI || isTrue)
+            if (gameManager.IsPlayerOnTurnAI || find)
             {
                 IsEngineThinking = true;
                 EngineThinkingChanged(true);
@@ -128,15 +139,38 @@ namespace EvadeWPF.Services
                     return;
                 }
 
+                if (find)
+                {
+                    RecommendedMove = new List<int>(gameManager.Move);
+                    OutputMessage(SendBestMoveToOutput(RecommendedMove));
+                    IsEngineThinking = false;   
+                    EngineThinkingChanged(false);
+                    RecommendedMove.Clear();
+                    gameManager.Move.Clear();
+                    gameManager.IsGameEndTriggered(gameManager.GameBoard.GameArray);
+                    return;
+                }
+
                 GameTurn();
             }
         }
+
         public async Task<List<int>> GetAITurn(CancellationToken cancellationToken, AILevels aiLevel)
         {
             var myTask = Task.Run(() => gameManager.GetAITurn(cancellationToken, aiLevel));
             var Move = await myTask;
             return Move;
         }
+
+        private string SendBestMoveToOutput(List<int> move)
+        {
+            string selectedColumn = AppConstants.ParseColumnValues(move[0].ToString());
+            string targetColumn = AppConstants.ParseColumnValues(move[3].ToString());
+            string selectedPiece = AppConstants.ParsePieceValues(move[2].ToString());
+
+            return $"Best move: Select {selectedPiece} from {selectedColumn}{move[1]} to {targetColumn}{move[4]}.";
+        }
+
 
         //Validates selected unit piece
         public bool IsSelectValid(IBoardItem boardItem)
@@ -183,15 +217,59 @@ namespace EvadeWPF.Services
         {
             if (gameManager != null)
             {
-                foreach (var itemToRemove in boardItems.Where(x => x is BoardPiece).ToList())
+                foreach (var itemToRemove in boardItems.Where(x => x is BoardPiece || x.PieceType==BoardValues.Recommended).ToList())
+                {
                     boardItems.Remove(itemToRemove);
+                }
+
+                if (RecommendedMove != null && RecommendedMove.Count > 0)
+                {
+
+                    boardItems.Add(new BoardPiece
+                    {
+                        Col = RecommendedMove[0],
+                        Row = RecommendedMove[1],
+                        PieceType = BoardValues.Recommended
+                    });
+                    
+                
+                    boardItems.Add(new BoardSquare
+                    {
+                        Col = RecommendedMove[3],
+                        Row = RecommendedMove[4],
+                        PieceType = BoardValues.Recommended
+
+                    });
+                
+
+                    /*
+                    foreach (var item in boardItems)
+                    {
+                        item.RecommendedMove = false;
+                        if (item.Col == RecommendedMove[0] && item.Row == RecommendedMove[1]
+                            || item.Col == RecommendedMove[3] && item.Row == RecommendedMove[4])
+                        {
+                            item.RecommendedMove = true;
+                        }
+                    }
+                    */
+                }
+
+
                 var gameBoard = gameManager.GameBoard.GameArray;
+
                 for (var i = 1; i <= 6; i++)
-                for (var j = 1; j <= 6; j++)
-                    if (HelperMethods.EqualsAny(gameBoard[i, j],
-                        (int) BoardValues.BlackKing, (int) BoardValues.BlackPawn, (int) BoardValues.WhiteKing,
-                        (int) BoardValues.WhitePawn, (int) BoardValues.Frozen))
-                        boardItems.Add(new BoardPiece {Col = i, Row = j, PieceType = (BoardValues) gameBoard[i, j]});
+                {
+                    for (var j = 1; j <= 6; j++)
+                    {
+                        if (HelperMethods.EqualsAny(gameBoard[i, j],
+                            (int)BoardValues.BlackKing, (int)BoardValues.BlackPawn, (int)BoardValues.WhiteKing,
+                            (int)BoardValues.WhitePawn, (int)BoardValues.Frozen))
+                            boardItems.Add(new BoardPiece { Col = i, Row = j, PieceType = (BoardValues)gameBoard[i, j] });
+                    }
+
+                }
+
             }
         }
         
@@ -261,7 +339,7 @@ namespace EvadeWPF.Services
         {
             cancellationTokenSource.Cancel();
             gameManager.GetMoveForRedo();
-            GameTurn();
+            GameTurn(true);
         }
     }
 }

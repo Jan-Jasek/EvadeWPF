@@ -14,5 +14,7 @@ namespace EvadeWPF.Interfaces
         int Col { get; set; }
 
         BoardValues PieceType { get; set; }
+
+        bool RecommendedMove { get; set; }
     }
 }

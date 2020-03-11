@@ -8,6 +8,14 @@
         <Style.Triggers>
             <MultiDataTrigger>
                 <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.Recommended}"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <Setter Property="Source" Value="Images/TextureRed.jpg"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
                     <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.WhitePawn}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
@@ -44,6 +52,15 @@
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
                     <Setter Property="Source" Value="Images/TextureFrozen.jpg"/>
+                </MultiDataTrigger.Setters>
+            </MultiDataTrigger>
+            <MultiDataTrigger>
+                <MultiDataTrigger.Conditions>
+                    <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.Empty}"/>
+                    <Condition Binding="{Binding RecommendedMove}" Value="True"/>
+                </MultiDataTrigger.Conditions>
+                <MultiDataTrigger.Setters>
+                    <!--<Setter Property="Source" Value="Images/FrozenOlaf.png"/>-->
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
         </Style.Triggers>
@@ -195,8 +212,8 @@
                     </GeometryDrawing.Brush>
                     <GeometryDrawing.Geometry>
                         <GeometryGroup>
-                            <RectangleGeometry Rect="0,0,150,150"/>
-                            <!--<RectangleGeometry Rect="0,0,150,150"/>-->
+                            <RectangleGeometry Rect="0,0,75,75"/>
+                            <RectangleGeometry Rect="75,75,75,75"/>
                         </GeometryGroup>
                     </GeometryDrawing.Geometry>
                 </GeometryDrawing>
