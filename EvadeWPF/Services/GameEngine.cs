@@ -102,8 +102,9 @@ namespace EvadeWPF.Services
             foreach (var move in moveHistory)
             {
                 gameManager.Move = new List<int>(move);
-                OutputMessage(TurnToOutput(gameManager.Move));
                 gameManager.DoGameTurn();
+                OutputMessage(TurnToOutput(gameManager.Move));
+                gameManager.Move.Clear();
             }
 
             IsEngineThinking = false;
