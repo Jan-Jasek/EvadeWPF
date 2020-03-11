@@ -143,7 +143,7 @@ namespace EvadeWPF.ViewModels
                 {
                     IsGameEnded = false;
                 }
-                OutputMessage("UndoMove");
+                OutputMessage("UndoMove:");
                 _engine.UndoMove();
             });}
         }
@@ -151,7 +151,7 @@ namespace EvadeWPF.ViewModels
         {
             get { return new DelegateCommand(() =>
             {
-                OutputMessage("RedoMove");
+                OutputMessage("RedoMove:");
                 _engine.RedoMove();
             }); }
         }
@@ -159,7 +159,7 @@ namespace EvadeWPF.ViewModels
         {
             get { return new DelegateCommand(() =>
             {
-                OutputMessage("PlayBestMove");
+                OutputMessage("PlayBestMove:");
                 _engine.PlayBestMove();
             });}
         }
@@ -302,7 +302,7 @@ namespace EvadeWPF.ViewModels
                             .Select(x => int.Parse(x.ToString()))
                             .ToList<int>()));
                     NewGame();
-                    OutputLogTextBox = $"Loaded game {openFileDlg.FileName}";
+                    OutputLogTextBox = $"Loaded game {openFileDlg.FileName} \n";
 
                     IsWhitePlayerAI = xmlDoc.Descendants("IsWhiteAI")
                         .Select(element => bool.Parse(element.Value.ToString()))

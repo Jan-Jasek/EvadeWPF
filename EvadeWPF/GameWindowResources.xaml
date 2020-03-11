@@ -11,7 +11,7 @@
                     <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.WhitePawn}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/WhitePawn.png"/>
+                    <Setter Property="Source" Value="Images/WhitePawn.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <MultiDataTrigger>
@@ -19,7 +19,7 @@
                     <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.WhiteKing}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/WhiteKing.png"/>
+                    <Setter Property="Source" Value="Images/WhiteKing.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <MultiDataTrigger>
@@ -27,7 +27,7 @@
                     <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.BlackPawn}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/BlackPawn.png"/>
+                    <Setter Property="Source" Value="Images/BlackPawn.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <MultiDataTrigger>
@@ -35,7 +35,7 @@
                     <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.BlackKing}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Pieces/BlackKing.png"/>
+                    <Setter Property="Source" Value="Images/BlackKing.png"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
             <MultiDataTrigger>
@@ -43,7 +43,7 @@
                     <Condition Binding="{Binding PieceType}" Value="{x:Static Member=constants:BoardValues.Frozen}"/>
                 </MultiDataTrigger.Conditions>
                 <MultiDataTrigger.Setters>
-                    <Setter Property="Source" Value="Images/Textures/TextureFrozen.jpg"/>
+                    <Setter Property="Source" Value="Images/TextureFrozen.jpg"/>
                 </MultiDataTrigger.Setters>
             </MultiDataTrigger>
         </Style.Triggers>
@@ -60,6 +60,8 @@
     <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <helpers:RowConverter x:Key="RowConverter"/>
     <helpers:BoardSizeConverter x:Key="BoardSizeConverter"/>
+    <helpers:SquareSizeConverter x:Key="SquareSizeConverter"/>
+    <helpers:ViewPortSizeConverter x:Key="ViewPortSizeConverter"/>
     <Style x:Key="BoardPieceContainerStyle" TargetType="ListBoxItem">
         <Setter Property="Grid.Row" Value="{Binding Row, Converter={StaticResource RowConverter}, Mode=OneWay}"/>
         <Setter Property="Grid.Column" Value="{Binding Col, Converter={StaticResource RowConverter}, Mode=OneWay}"/>
@@ -180,22 +182,27 @@
     </Style>
 
     <!--Background of the game board-->
-    <DrawingBrush x:Key="BoardBackgroundBrush" Viewport="0,0,150,150" ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
+    <!--Viewport="{Binding Path=Width, Converter={StaticResource ViewPortSizeConverter}, Mode=TwoWay, ElementName=BoardBackgroundGrid}"-->
+
+    <DrawingBrush x:Key="BoardBackgroundBrush" 
+                  Viewport="0,0,150,150"
+                  ViewportUnits="Absolute" TileMode="Tile" Stretch="None">
         <DrawingBrush.Drawing>
             <DrawingGroup RenderOptions.EdgeMode="Aliased" RenderOptions.BitmapScalingMode="HighQuality">
                 <GeometryDrawing>
                     <GeometryDrawing.Brush>
-                        <ImageBrush ImageSource="Images/Textures/Texture_2.jpg" Stretch="Fill"/>
+                        <ImageBrush ImageSource="Images/TextureLight.jpg" Stretch="Fill"/>
                     </GeometryDrawing.Brush>
                     <GeometryDrawing.Geometry>
                         <GeometryGroup>
                             <RectangleGeometry Rect="0,0,150,150"/>
+                            <!--<RectangleGeometry Rect="0,0,150,150"/>-->
                         </GeometryGroup>
                     </GeometryDrawing.Geometry>
                 </GeometryDrawing>
                 <GeometryDrawing>
                     <GeometryDrawing.Brush>
-                        <ImageBrush ImageSource="Images/Textures/Texture_1.jpg" Stretch="Fill"/>
+                        <ImageBrush ImageSource="Images/TextureDark.jpg" Stretch="Fill"/>
                     </GeometryDrawing.Brush>
                     <GeometryDrawing.Geometry>
                         <GeometryGroup>
@@ -208,9 +215,13 @@
         </DrawingBrush.Drawing>
     </DrawingBrush>
 
+    <!--Width="{Binding Path=Width, Converter={StaticResource BoardSizeConverter}, Mode=TwoWay, ElementName=MainGameWindow}"-->
     <ItemsPanelTemplate x:Key="BoardBackgroundTemplate">
-        <Grid Width="{Binding Path=Width, Converter={StaticResource BoardSizeConverter}, Mode=TwoWay, ElementName=MainGameWindow}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
-              Background="{StaticResource BoardBackgroundBrush}">
+        <Grid
+            x:Name="BoardBackgroundGrid"
+            Width="450"
+            Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
+            Background="{StaticResource BoardBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
