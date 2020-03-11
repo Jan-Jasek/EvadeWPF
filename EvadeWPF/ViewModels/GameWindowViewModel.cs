@@ -174,7 +174,7 @@ namespace EvadeWPF.ViewModels
             _engine.AsyncCancelledInUI();
             IsGameEnded = false;
             IsListBoxEnabled = false;
-            OutputTextBox = AppConstants.NewGameStarted;
+            OutputLogTextBox = AppConstants.NewGameStarted;
             BoardItems.Clear();
             _engine.StartEngine();
             for (int i = 1; i <= 6; i++)
@@ -302,7 +302,7 @@ namespace EvadeWPF.ViewModels
                             .Select(x => int.Parse(x.ToString()))
                             .ToList<int>()));
                     NewGame();
-                    OutputTextBox = $"Loaded game {openFileDlg.FileName}";
+                    OutputLogTextBox = $"Loaded game {openFileDlg.FileName}";
 
                     IsWhitePlayerAI = xmlDoc.Descendants("IsWhiteAI")
                         .Select(element => bool.Parse(element.Value.ToString()))
@@ -600,13 +600,24 @@ namespace EvadeWPF.ViewModels
             }
         }
 
-        private string _outputTextBox;
-        public string OutputTextBox
+        private string _moveHistoryTextBlock;
+        public string MoveHistoryTextBlock
         {
-            get => _outputTextBox;
+            get => _moveHistoryTextBlock;
             set
             {
-                _outputTextBox = value;
+                _moveHistoryTextBlock = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private string _outputLogTextBox;
+        public string OutputLogTextBox
+        {
+            get => _outputLogTextBox;
+            set
+            {
+                _outputLogTextBox = value;
                 RaisePropertyChanged();
             }
         }
@@ -623,12 +634,12 @@ namespace EvadeWPF.ViewModels
         {
             IsListBoxEnabled = false;
             IsGameEnded = true;
-            OutputTextBox = OutputTextBox + "Game won by" + message;
+            OutputLogTextBox = OutputLogTextBox + "Game won by" + message;
         }
 
         private void OutputMessage(string message)
         {
-            OutputTextBox = OutputTextBox + message + "\n";
+            OutputLogTextBox = OutputLogTextBox + message + "\n";
         }
 
         public void ResetAfterMove()

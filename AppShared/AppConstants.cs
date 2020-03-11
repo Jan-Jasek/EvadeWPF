@@ -60,7 +60,7 @@ namespace AppShared
             {"!EndGame","Ends current game." }
         };
 
-        public static string NewGameStarted = "New game has started!";
+        public static string NewGameStarted = "New game has started!\n";
         public static string WrongFieldSelected = "Invalid field selected. Please select a valid field.\n";
         public static string WrongMoveSelected = "Invalid move.\n";
         public static string FieldFrozen = "The field is now frozen. ";

@@ -59,13 +59,12 @@
 
     <helpers:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
     <helpers:RowConverter x:Key="RowConverter"/>
+    <helpers:BoardSizeConverter x:Key="BoardSizeConverter"/>
     <Style x:Key="BoardPieceContainerStyle" TargetType="ListBoxItem">
         <Setter Property="Grid.Row" Value="{Binding Row, Converter={StaticResource RowConverter}, Mode=OneWay}"/>
         <Setter Property="Grid.Column" Value="{Binding Col, Converter={StaticResource RowConverter}, Mode=OneWay}"/>
         <Setter Property="Padding" Value="5"/>
     </Style>
-
-
 
     <Style x:Key="MenuItemRadio" TargetType="MenuItem">
         <Setter Property="Template">
@@ -210,7 +209,7 @@
     </DrawingBrush>
 
     <ItemsPanelTemplate x:Key="BoardBackgroundTemplate">
-        <Grid Width="450" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
+        <Grid Width="{Binding Path=Width, Converter={StaticResource BoardSizeConverter}, Mode=TwoWay, ElementName=MainGameWindow}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}"
               Background="{StaticResource BoardBackgroundBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition/>

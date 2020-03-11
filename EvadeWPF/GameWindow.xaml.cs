@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using EvadeWPF.Helpers;
 using EvadeWPF.ViewModels;
@@ -11,23 +12,39 @@ namespace EvadeWPF
     /// </summary>
     public partial class GameWindow : Window
     {
+        private Boolean _autoScroll = true;
+
         public GameWindow()
         {
             InitializeComponent();
             DataContext = ContainerLocator.UContainer.Resolve<GameWindowViewModel>();
         }
 
-        private void MenuItemWithRadioButtons_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            MenuItem mi = sender as MenuItem;
-            if (mi != null)
-            {
-                RadioButton rb = mi.Icon as RadioButton;
-                if (rb != null)
-                {
-                    rb.IsChecked = true;
+            ScrollViewer sv = sender as ScrollViewer;
+            // User scroll event : set or unset auto-scroll mode
+            if (e.ExtentHeightChange == 0)
+            {   // Content unchanged : user scroll event
+                if (sv.VerticalOffset == sv.ScrollableHeight)
+                {   // Scroll bar is in bottom
+                    // Set auto-scroll mode
+                    _autoScroll = true;
+                }
+                else
+                {   // Scroll bar isn't in bottom
+                    // Unset auto-scroll mode
+                    _autoScroll = false;
                 }
             }
+
+            // Content scroll event : auto-scroll eventually
+            if (_autoScroll && e.ExtentHeightChange != 0)
+            {   // Content changed and auto-scroll mode set
+                // Autoscroll
+                sv.ScrollToVerticalOffset(sv.ExtentHeight);
+            }
         }
+
     }
 }

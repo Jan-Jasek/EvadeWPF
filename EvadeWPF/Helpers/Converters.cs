@@ -43,4 +43,27 @@ namespace EvadeWPF.Helpers
 
         #endregion
     }
+
+    [ValueConversion(typeof(double), typeof(double))]
+    public class BoardSizeConverter : IValueConverter
+    {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(double))
+                throw new InvalidOperationException("The target must be a int");
+
+            return (double)value*0.7;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        #endregion
+    }
 }
