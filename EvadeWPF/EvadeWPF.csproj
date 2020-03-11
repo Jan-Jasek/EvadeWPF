@@ -83,7 +83,6 @@
     <Compile Include="Helpers\Converters.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Helpers\NotifyPropertyChanged.cs" />
-    <Compile Include="Helpers\RelayCommands.cs" />
     <Compile Include="Interfaces\IGameEngine.cs" />
     <Compile Include="Interfaces\IBoardItem.cs" />
     <Compile Include="Models\BoardPiece.cs" />
@@ -143,20 +142,17 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Converters\" />
+    <Resource Include="Images\BlackKing.png" />
+    <Resource Include="Images\BlackPawn.png" />
+    <Resource Include="Images\WhiteKing.png" />
+    <Resource Include="Images\WhitePawn.png" />
+    <Resource Include="Images\TextureDark.jpg" />
+    <Resource Include="Images\TextureLight.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Pieces\BlackKing.png" />
-    <Resource Include="Images\Pieces\BlackPawn.png" />
-    <Resource Include="Images\Pieces\WhiteKing.png" />
-    <Resource Include="Images\Pieces\WhitePawn.png" />
-    <Resource Include="Images\Textures\DarkWood.jpg" />
-    <Resource Include="Images\Textures\Texture_1.jpg" />
-    <Resource Include="Images\Textures\Texture_2.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Textures\TextureFrozen.jpg" />
+    <Resource Include="Images\TextureFrozen.jpg" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AppShared\AppShared.csproj">
@@ -169,7 +165,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\Pieces\FrozenOlaf.png" />
+    <Resource Include="Images\FrozenOlaf.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
