@@ -40,8 +40,9 @@
                         <Bold></Bold><Bold>Game --> New Game</Bold> to start a new game at default state.<LineBreak/>  <LineBreak/>
                         <Bold>Game --> Save Game</Bold> to save a state of current state of the game to file, and <Bold>Game --> Load Game</Bold> to load the game from the file.<LineBreak/>  <LineBreak/>
                         <Bold>Help --> Best Move</Bold> for a hint of a best possible move at the current state of the game.<LineBreak/>  <LineBreak/>
-                        <Bold>History --> Undo / Redo</Bold> for browsing the move history of the game. Playing a new move in one of the past states of the game removes the remaining moves from the history. Undoing an AI turn requires the user to click to the game board in order to start the next AI turn. <LineBreak/>  <LineBreak/>
-                        <Bold>AI</Bold> to set whether the players are controlled by AI algorithm or user.<LineBreak/>  <LineBreak/>
+                        <Bold>History --> Undo / Redo</Bold> for browsing the move history of the game. Playing a new move in one of the past states of the game removes the remaining moves from the history. Undoing an AI turn requires the user to click to the game board in order to start the next AI turn. <LineBreak/> 
+                        One can also browse through the history of the game by double clicking on the previous moves in the Move History window. <LineBreak/> <LineBreak/> 
+                        <Bold>AI</Bold> to set whether the players are controlled by AI algorithm or user.<LineBreak/> <LineBreak/>
                         <Bold>AI --> Difficulty</Bold> to set the AI difficulty of the individual players.<LineBreak/>
                     </TextBlock>
                 </StackPanel>
