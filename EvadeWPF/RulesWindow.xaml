@@ -1,0 +1,41 @@
+﻿<Window x:Class="EvadeWPF.RulesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EvadeWPF"
+        mc:Ignorable="d"
+        Title="Evade Rules"
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize"
+        BorderThickness="0"
+        BorderBrush="Blue" Background="Bisque"
+        Height="600" Width="600">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*"/>
+            <ColumnDefinition Width="0.4*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="0">
+            <TextBlock FontSize="30" TextWrapping="Wrap" FontWeight="Bold" Text="Evade"/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="The game was first introduced by 3M Company in 1971."/>
+            <TextBlock FontSize="18" TextWrapping="Wrap" FontWeight="Bold" Text="Aim of the game"/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Get one of your two kings to the opposite side of the gam board."/>
+            <TextBlock FontSize="18" TextWrapping="Wrap" FontWeight="Bold" Text="Default state"/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="At the beginning of the game, two kings stand in the middle fields of outer rows and four pawns stand on the remaining outer fields (see picture)."/>
+            <TextBlock FontSize="18" TextWrapping="Wrap" FontWeight="Bold" Text="Playing the game"/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Players periodically takes turns."/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Ordinary pawn can move to any direction (orthogonally and diagonally) by a distance of one field."/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="If a pawn is placed on the field that is already occupied by an opponents unit (both king or pawn), both units are frozen on that field and other units cannot move to the field for the rest of the game."/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Movement to a field with ones unit or with two frozen units is not allowed."/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="King can move in any direction by a distance of one field, but only to the empty fields. It therefore cannot froze an opponents stone."/>
+            <TextBlock FontSize="18" TextWrapping="Wrap" FontWeight="Bold" Text="End of the game"/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Player that gets one of his kings to the opposite outer row of the board wins"/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Player that cannot move loses."/>
+            <TextBlock FontSize="12" TextWrapping="Wrap" Text="Game results in tie, provided that both players loose both of their kings."/>
+
+
+        </StackPanel>
+        <Image VerticalAlignment="Top" Grid.Column="1" Source="Images/GameLook.png"/> 
+    </Grid>
+</Window>

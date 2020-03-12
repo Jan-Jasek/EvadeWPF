@@ -10,7 +10,7 @@
         ProcessorArchitecture=MSIL;component/themes/aero.normalcolor.xaml">
              <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GameWindowResources.xaml"/>
-             </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
          </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -4,6 +4,10 @@
                     xmlns:constants="clr-namespace:AppShared;assembly=AppShared"
                     xmlns:helpers="clr-namespace:EvadeWPF.Helpers"
                     xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls">
+    <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="{StaticResource GreenColor}" />
+    <SolidColorBrush x:Key="ListBoxItemSelectedPointerOverBackgroundThemeBrush" Color="{StaticResource LightGreenColor}" />
+    <SolidColorBrush x:Key="ListBoxFocusBackgroundThemeBrush" Color="Transparent" />
+
     <Style x:Key="BoardPieceStyle" TargetType="Image">
         <Style.Triggers>
             <MultiDataTrigger>

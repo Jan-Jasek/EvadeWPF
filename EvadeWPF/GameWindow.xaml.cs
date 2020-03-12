@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using EvadeWPF.Helpers;
 using EvadeWPF.ViewModels;
 using Microsoft.Xaml.Behaviors;
@@ -14,7 +15,6 @@ namespace EvadeWPF
     public partial class GameWindow
     {
         private Boolean _autoScroll = true;
-        private GameWindowViewModel vm;
 
         public GameWindow()
         {
@@ -95,6 +95,39 @@ namespace EvadeWPF
             this.AssociatedObject.SelectionChanged -=
                 AssociatedObject_SelectionChanged;
 
+        }
+    }
+
+    public class KeyDownWithArgsBehavior : Behavior<UIElement>
+    {
+        public ICommand KeyDownCommand
+        {
+            get { return (ICommand)GetValue(KeyDownCommandProperty); }
+            set { SetValue(KeyDownCommandProperty, value); }
+        }
+
+        public static readonly DependencyProperty KeyDownCommandProperty =
+            DependencyProperty.Register("KeyDownCommand", typeof(ICommand), typeof(KeyDownWithArgsBehavior), new UIPropertyMetadata(null));
+
+
+        protected override void OnAttached()
+        {
+            AssociatedObject.KeyDown += new KeyEventHandler(AssociatedObjectKeyUp);
+            base.OnAttached();
+        }
+
+        protected override void OnDetaching()
+        {
+            AssociatedObject.KeyDown -= new KeyEventHandler(AssociatedObjectKeyUp);
+            base.OnDetaching();
+        }
+
+        private void AssociatedObjectKeyUp(object sender, KeyEventArgs e)
+        {
+            if (KeyDownCommand != null)
+            {
+                KeyDownCommand.Execute(e.Key);
+            }
         }
     }
 }

@@ -109,6 +109,9 @@
     <Compile Include="Models\BoardPiece.cs" />
     <Compile Include="Models\BoardSquare.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="RulesWindow.xaml.cs">
+      <DependentUpon>RulesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Services\GameEngine.cs" />
     <Compile Include="ViewModels\GameWindowViewModel.cs" />
     <Compile Include="HelpWindow.xaml.cs">
@@ -142,6 +145,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="RulesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -161,9 +168,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Help\Evade.pdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -199,6 +203,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\FrozenOlaf.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\GameLook.png" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

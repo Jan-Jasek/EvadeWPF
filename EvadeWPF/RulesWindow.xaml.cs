@@ -15,11 +15,11 @@ using System.Windows.Shapes;
 namespace EvadeWPF
 {
     /// <summary>
-    /// Interaction logic for Window1.xaml
+    /// Interaction logic for RulesWindow.xaml
     /// </summary>
-    public partial class HelpWindow
+    public partial class RulesWindow : Window
     {
-        public HelpWindow()
+        public RulesWindow()
         {
             InitializeComponent();
         }

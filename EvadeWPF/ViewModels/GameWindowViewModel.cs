@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -162,18 +163,14 @@ namespace EvadeWPF.ViewModels
 
         public void Rules()
         {
-            try
+            Thread viewThread = new Thread(() =>
             {
-                String fileName = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\help\\Evade.pdf";
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                process.StartInfo.FileName = fileName;
-                process.Start();
-                process.WaitForExit();
-            }
-            catch(Exception e)
-            {
-                MessageBox.Show($"Unable to load Rules file \n{e.Message}", "Load pdf error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
+                RulesWindow view = new RulesWindow();
+                //CodeRequestViewModel viewModel = new CodeRequestViewModel();
+                view.ShowDialog();
+            });
+            viewThread.SetApartmentState(ApartmentState.STA);
+            viewThread.Start();
         }
 
         public ICommand RulesCommand
@@ -197,6 +194,25 @@ namespace EvadeWPF.ViewModels
                     if ((int)targetTurn >= 1 && targetTurn != _engine.gameManager.GameBoard.TempTurnCounter)
                     {
                         MoveHistoryDoubleClick(targetTurn);
+                    }
+                });
+            }
+        }
+
+        public ICommand MoveHistoryKeyDownCommand
+        {
+            get
+            {
+                return new RelayCommand(x =>
+                {
+                    if ((Key)x == Key.Enter)
+                    {
+                        var targetTurn = CurrentMoveFromHistory+1;
+                        if ((int)targetTurn >= 1 && targetTurn != _engine.gameManager.GameBoard.TempTurnCounter)
+                        {
+                            MoveHistoryDoubleClick(targetTurn);
+                        }
+
                     }
                 });
             }

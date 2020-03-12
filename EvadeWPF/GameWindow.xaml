@@ -1,4 +1,4 @@
-﻿<controls:MetroWindow
+﻿<Window
     x:Class="EvadeWPF.GameWindow"
     x:Name="MainGameWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -11,14 +11,14 @@
     xmlns:evadeWpf="clr-namespace:EvadeWPF"
     mc:Ignorable="d"
     WindowStartupLocation="CenterScreen" 
-    ShowMaxRestoreButton="False" ShowMinButton="False"
-    BorderThickness="1" 
-    Background="DimGray"
+    ResizeMode="NoResize"
+    BorderThickness="0"
+    BorderBrush="Blue" Background="Blue"
     Title="EvadeWPF" 
     Height="700" Width="850" MinHeight="700" MaxHeight="700" MinWidth="850" MaxWidth="850"
     Padding="10">
     <Border Background="Bisque">
-        <Grid x:Name="MainGrid" Margin="0">
+        <Grid x:Name="MainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.05*"/>
                 <RowDefinition Height="0.85*"/>
@@ -31,6 +31,7 @@
                   Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <MenuItem Header="Game">
                     <MenuItem Header="NewGame" Command="{Binding NewGameCommand}"/>
+                    <Separator/>
                     <MenuItem Header="SaveGame" Command="{Binding SaveGameCommand}"/>
                     <MenuItem Header="LoadGame" Command="{Binding LoadGameCommand}"/>
                 </MenuItem>
@@ -80,8 +81,9 @@
                               IsEnabled="{Binding IsRedoButtonEnabled}"/>
                 </MenuItem>
                 <MenuItem Header="Help">
+                    <MenuItem Header="View Help" Command="{Binding HelpCommand}"/>
                     <MenuItem Header="Rules" Command="{Binding RulesCommand}"/>
-                    <MenuItem Header="ViewHelp" Command="{Binding HelpCommand}"/>
+                    <Separator/>
                     <MenuItem Header="Best Move" Command="{Binding PlayBestMoveCommand}" 
                               IsEnabled="{Binding IsListBoxEnabled}"/>
                 </MenuItem>
@@ -128,7 +130,8 @@
                 <ScrollViewer Name="MoveScroll" 
                               Grid.Row="1">
                     <ListView x:Name="MoveHistoryListView" ItemsSource="{Binding MoveHistory}"
-                              SelectedIndex="{Binding CurrentMoveFromHistory}" SelectionMode="Single">
+                              SelectedIndex="{Binding CurrentMoveFromHistory, Mode=TwoWay}" SelectionMode="Single"
+                              >
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction 
@@ -138,6 +141,7 @@
                         </i:Interaction.Triggers>
                         <i:Interaction.Behaviors>
                             <evadeWpf:ScrollIntoViewForListBox />
+                            <evadeWpf:KeyDownWithArgsBehavior KeyDownCommand="{Binding MoveHistoryKeyDownCommand}"/>
                         </i:Interaction.Behaviors>
                     </ListView>
                 </ScrollViewer>
@@ -179,4 +183,4 @@
             </Grid>
         </Grid>
     </Border>
-</controls:MetroWindow>
+</Window>
