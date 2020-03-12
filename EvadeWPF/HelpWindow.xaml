@@ -13,10 +13,12 @@
      Background="DimGray"
      Title="Evade Help" 
      Height="400" Width="400" MinHeight="400" MaxHeight="400" MinWidth="400" MaxWidth="400">
-    <Grid>
-        <ScrollViewer>
-            <TextBox x:Name="HelpTextBox" TextWrapping="Wrap">
-            </TextBox>
-        </ScrollViewer>
-    </Grid>
+    <Border Background="Bisque">
+        <Grid>
+            <ScrollViewer>
+                <TextBox x:Name="HelpTextBox" TextWrapping="Wrap">
+                </TextBox>
+            </ScrollViewer>
+        </Grid>
+    </Border>
 </mah:MetroWindow>

@@ -7,7 +7,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ctr="clr-namespace:EvadeWPF.Controls"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"   
+    xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:evadeWpf="clr-namespace:EvadeWPF"
     mc:Ignorable="d"
     WindowStartupLocation="CenterScreen" 
     ShowMaxRestoreButton="False" ShowMinButton="False"
@@ -21,7 +22,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.05*"/>
                 <RowDefinition Height="0.85*"/>
-                <RowDefinition Height="0.15*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="BoardGridUnit" Width="Auto"/>
@@ -39,62 +39,66 @@
                               IsChecked="{Binding IsWhitePlayerAI, Mode=TwoWay}"/>
                     <MenuItem Header="BlackPlayer" IsCheckable="True"
                               IsChecked="{Binding IsBlackPlayerAI, Mode=TwoWay}"/>
-                </MenuItem>
-                <MenuItem Header="Difficulty">
-                    <MenuItem Header="WhitePlayer" 
+                    <Separator/>
+                    <MenuItem Header="Difficulty">
+                        <MenuItem Header="WhitePlayer" 
                               ItemContainerStyle="{StaticResource MenuItemRadioContainerStyle}">
-                        <MenuItem Header="Random" IsCheckable="True"
+                            <MenuItem Header="Random" IsCheckable="True"
                                   Style="{StaticResource MenuItemRadio}"
                                   IsChecked="{Binding IsWhiteDifficultyRandom, Mode=TwoWay}"/>
-                        <MenuItem Header="Dumb" IsCheckable="True"
+                            <MenuItem Header="Dumb" IsCheckable="True"
                                   Style="{StaticResource MenuItemRadio}"
                                   IsChecked="{Binding IsWhiteDifficultyDumb, Mode=TwoWay}"/>
-                        <MenuItem Header="Smart" IsCheckable="True"
+                            <MenuItem Header="Smart" IsCheckable="True"
                                   Style="{StaticResource MenuItemRadio}"
                                   IsChecked="{Binding IsWhiteDifficultySmart, Mode=TwoWay}"/>
-                    </MenuItem>
-                    <MenuItem Header="BlackPlayer"
+                        </MenuItem>
+                        <MenuItem Header="BlackPlayer"
                               ItemContainerStyle="{StaticResource MenuItemRadioContainerStyle}">
-                        <MenuItem 
+                            <MenuItem 
                             Style="{StaticResource MenuItemRadio}"
                             IsCheckable="True"
                             Header="Random"
                             IsChecked="{Binding IsBlackDifficultyRandom, Mode=TwoWay}"/>
-                        <MenuItem 
+                            <MenuItem 
                             Style="{StaticResource MenuItemRadio}"
                             IsCheckable="True"
                             Header="Dumb"
                             IsChecked="{Binding IsBlackDifficultyDumb, Mode=TwoWay}"/>
-                        <MenuItem 
+                            <MenuItem 
                             Style="{StaticResource MenuItemRadio}"
                             IsCheckable="True"
                             Header="Smart"
                             IsChecked="{Binding IsBlackDifficultySmart, Mode=TwoWay}"/>
+                        </MenuItem>
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="Undo" Command="{Binding UndoMoveCommand}"
-                          IsEnabled="{Binding IsUndoButtonEnabled}"/>
-                <MenuItem Header="Redo" Command="{Binding RedoMoveCommand}"
-                          IsEnabled="{Binding IsRedoButtonEnabled}"/>
-                <MenuItem Header="Best Move" Command="{Binding PlayBestMoveCommand}" 
-                          IsEnabled="{Binding IsListBoxEnabled}"/>
+                <MenuItem Header="MoveHistory">
+                    <MenuItem Header="Undo" Command="{Binding UndoMoveCommand}"
+                              IsEnabled="{Binding IsUndoButtonEnabled}"/>
+                    <MenuItem Header="Redo" Command="{Binding RedoMoveCommand}"
+                              IsEnabled="{Binding IsRedoButtonEnabled}"/>
+                </MenuItem>
                 <MenuItem Header="Help">
                     <MenuItem Header="Rules" Command="{Binding RulesCommand}"/>
-                    <MenuItem Header="Help" Command="{Binding HelpCommand}"/>
+                    <MenuItem Header="ViewHelp" Command="{Binding HelpCommand}"/>
+                    <MenuItem Header="Best Move" Command="{Binding PlayBestMoveCommand}" 
+                              IsEnabled="{Binding IsListBoxEnabled}"/>
                 </MenuItem>
 
             </Menu>
             <Grid Margin="10,0,0,0"
                   Grid.Column="0" Grid.Row="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="0.15*"/>
-                    <RowDefinition/>
+                    <RowDefinition Height="0.1*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="0.1*"/>
                 </Grid.RowDefinitions>
                 <ctr:LoadingPanel Grid.Row="0" x:Name="loadingPanel"
                                   HorizontalAlignment="Center" VerticalAlignment="Top"
                                   HorizontalContentAlignment="Center" VerticalContentAlignment="Top"
                                   IsLoading="{Binding IsPanelLoading}"/>
-                <ListBox Name="BoardListBox"
+                <ListView Name="BoardListBox"
                          Grid.Row="1"
                          HorizontalAlignment="Center" VerticalAlignment="Center"
                          HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
@@ -105,53 +109,61 @@
                          ItemsPanel="{StaticResource BoardBackgroundTemplate}"
                          RenderTransformOrigin="0.5,0.5"
                          IsEnabled="{Binding IsListBoxEnabled, Mode=OneWay}">
-                </ListBox>
+                </ListView>
+                <Label
+                    Grid.Column="0" Grid.Row="2"
+                    Margin ="0,0,0,0" Content="{Binding PlayerOnTurn}"
+                    HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom"/>
             </Grid>
-            <StackPanel Orientation="Vertical"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"
-                        Grid.Row="2" Grid.Column="0">
-                <Label Margin="0,0,0,0" Content="{Binding TurnCounterLabel}"
-                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button FontFamily="Marlett" FontSize="20" Content="3"
-                            Command="{Binding UndoMoveCommand}"
-                            IsEnabled="{Binding IsUndoButtonEnabled}"/>
-                    <Button Content="Best move"
-                            Margin="10,0,0,0"
-                            Command="{Binding PlayBestMoveCommand}"
-                            IsEnabled="{Binding IsListBoxEnabled}"/>
-                    <Button FontFamily="Marlett" FontSize="20" Content="4"
-                            Margin="10,0,0,0"
-                            Command="{Binding RedoMoveCommand}"
-                            IsEnabled="{Binding IsRedoButtonEnabled}"/>
-                </StackPanel>
-                <Label Margin ="0,0,0,0" Content="{Binding PlayerOnTurn}"
-                       HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-            </StackPanel>
-            <Grid Grid.Column="1" Grid.Row="1" Margin="10,0,0,0">
+            <Grid Grid.Column="1" Grid.Row="1" Margin="10,0,10,10">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="0.05*"/>
+                    <RowDefinition Height="0.4*"/>
                     <RowDefinition Height="0.1*"/>
-                    <RowDefinition Height="0.5*"/>
-                    <RowDefinition Height="0.1*"/>
-                    <RowDefinition Height="0.5*"/>
+                    <RowDefinition Height="0.05*"/>
+                    <RowDefinition Height="0.4*"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Row="0"
                        Content="Move History:"/>
                 <ScrollViewer Name="MoveScroll" 
                               Grid.Row="1">
-                    <ListView x:Name="MoveTextBox" ItemsSource="{Binding MoveHistory}"
-                              SelectedIndex="{Binding CurrentMoveFromHistory}">
+                    <ListView x:Name="MoveHistoryListView" ItemsSource="{Binding MoveHistory}"
+                              SelectedIndex="{Binding CurrentMoveFromHistory}" SelectionMode="Single">
                         <i:Interaction.Triggers>
-                            <i:EventTrigger SourceObject="{Binding MoveHistory}" EventName="CollectionChanged">
-                                <i:CallMethodAction MethodName="ScrollToEnd" TargetObject="{Binding ElementName=MoveScroll}"/>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction 
+                                    Command="{Binding MoveHistoryDoubleClickCommand}"
+                                    CommandParameter="{Binding ElementName=MoveHistoryListView, Path=SelectedIndex}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
+                        <i:Interaction.Behaviors>
+                            <evadeWpf:ScrollIntoViewForListBox />
+                        </i:Interaction.Behaviors>
                     </ListView>
                 </ScrollViewer>
-                <Label Grid.Row="2"
+                <StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Grid.Row="2" Grid.Column="0">
+                    <Label Margin="0,0,0,0" Content="{Binding TurnCounterLabel}"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Button FontFamily="Marlett" FontSize="20" Content="3"
+                                Command="{Binding UndoMoveCommand}"
+                                IsEnabled="{Binding IsUndoButtonEnabled}"/>
+                        <Button Content="Best move"
+                                Margin="10,0,0,0"
+                                Command="{Binding PlayBestMoveCommand}"
+                                IsEnabled="{Binding IsListBoxEnabled}"/>
+                        <Button FontFamily="Marlett" FontSize="20" Content="4"
+                                Margin="10,0,0,0"
+                                Command="{Binding RedoMoveCommand}"
+                                IsEnabled="{Binding IsRedoButtonEnabled}"/>
+                    </StackPanel>
+                </StackPanel>
+                <Label Grid.Row="3"
                        Content ="Output Log"/>
-                <ScrollViewer Name="LogScroll" Grid.Row="3">
+                <ScrollViewer Name="LogScroll" Grid.Row="4">
                     <TextBox x:Name="LogTextBox" 
                                Text="{Binding OutputLogTextBox}" Background="BurlyWood"
                                TextWrapping="Wrap">

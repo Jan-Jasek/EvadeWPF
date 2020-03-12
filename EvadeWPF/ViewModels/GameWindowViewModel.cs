@@ -164,7 +164,7 @@ namespace EvadeWPF.ViewModels
         {
             try
             {
-                String fileName = "D:\\VSProjects\\EvadeWPF\\EvadeWPF\\Evade.pdf";
+                String fileName = System.IO.Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName) + "\\help\\Evade.pdf";
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo.FileName = fileName;
                 process.Start();
@@ -185,6 +185,44 @@ namespace EvadeWPF.ViewModels
                     Rules();
                 });
             }
+        }
+
+        public ICommand MoveHistoryDoubleClickCommand
+        {
+            get
+            {
+                return new RelayCommand(x =>
+                {
+                    var targetTurn = (int)x + 1;
+                    if ((int)targetTurn >= 1 && targetTurn != _engine.gameManager.GameBoard.TempTurnCounter)
+                    {
+                        MoveHistoryDoubleClick(targetTurn);
+                    }
+                });
+            }
+        }
+
+        private void MoveHistoryDoubleClick(int x)
+        {
+            int currentTurn = _engine.gameManager.GameBoard.TempTurnCounter;
+            int difference = currentTurn - x;
+            if (difference > 0)
+            {
+                while (difference != 0)
+                {
+                    _engine.UndoMove();
+                    difference--;
+                }
+            }
+            if (difference < 0)
+            {
+                while (difference != 0)
+                {
+                    _engine.RedoMove();
+                    difference++;
+                }
+            }
+
         }
 
         public ICommand UndoMoveCommand
